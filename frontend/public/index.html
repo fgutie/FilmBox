@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmBox - Plataforma de Cine Social</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
+  
+  <!-- Header -->
+  <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+        🎬 FilmBox
+      </h1>
+      
+      <!-- Nav normal -->
+      <nav id="nav-normal" class="hidden md:flex space-x-6">
+        <a href="#" class="hover:text-green-400 transition">Pel·lícules</a>
+        <a href="#" class="hover:text-green-400 transition">Llistes</a>
+        <a href="#" class="hover:text-green-400 transition">Perfil</a>
+      </nav>
+
+      <!-- Nav usuario logueado -->
+      <div id="nav-user" class="hidden items-center space-x-4">
+        <span id="username-display" class="text-green-400 font-semibold"></span>
+        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition">
+          Tancar sessió
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login/Register Form -->
+  <main id="auth-section" class="max-w-md mx-auto mt-20 p-8">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+      
+      <!-- Logo/Título -->
+      <div class="text-center mb-8">
+        <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto mb-4"></div>
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+          Benvingut a FilmBox
+        </h2>
+        <p class="text-gray-400 mt-2">La teva plataforma de cine social</p>
+      </div>
+
+      <!-- Formulari registre/login -->
+      <form id="auth-form" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Usuari</label>
+          <input type="text" id="username-input"
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 placeholder="El teu nom d'usuari" required>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Correu electrònic</label>
+          <input type="email" id="email-input"
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 placeholder="usuari@exemple.com" required>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Contrasenya</label>
+          <input type="password" id="password-input"
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" id="submit-btn"
+                class="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+          Iniciar Sessió
+        </button>
+      </form>
+
+      <div class="mt-8 text-center">
+        <button id="toggle-mode" class="text-green-400 hover:text-green-300 font-semibold text-sm">
+          No tens compte? Registra't
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mensaje loading -->
+  <div id="loading" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-white/20 border border-white/30 rounded-2xl p-8 text-center">
+      <div class="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-white">Connectant amb el servidor...</p>
+    </div>
+  </div>
+
+  <footer class="absolute bottom-0 w-full bg-black/50 backdrop-blur-md border-t border-gray-800 p-4 text-center text-sm text-gray-400">
+    © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+    let isLoginMode = true;
+
+    // Toggle register/login
+    document.getElementById('toggle-mode').onclick = () => {
+      isLoginMode = !isLoginMode;
+      const submitBtn = document.getElementById('submit-btn');
+      const toggleBtn = document.getElementById('toggle-mode');
+      
+      if (isLoginMode) {
+        submitBtn.textContent = 'Iniciar Sessió';
+        toggleBtn.textContent = "No tens compte? Registra't";
+      } else {
+        submitBtn.textContent = 'Registrar';
+        toggleBtn.textContent = "Ja tens compte? Inicia sessió";
+      }
+    };
+
+    // Form submit
+    document.getElementById('auth-form').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username-input').value.trim();
+      const email = document.getElementById('email-input').value.trim();
+      const password = document.getElementById('password-input').value;
+      
+      if (!username || !email || !password) {
+        alert('Omple tots els camps');
+        return;
+      }
+
+      const endpoint = isLoginMode ? 'users/login' : 'users/register';
+      const loadingEl = document.getElementById('loading');
+      
+      try {
+        loadingEl.classList.remove('hidden');
+        
+        const response = await fetch(`${API_BASE}/${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            username: isLoginMode ? undefined : username,
+            email, 
+            password 
+          })
+        });
+
+        const data = await response.json();
+        loadingEl.classList.add('hidden');
+        
+        if (response.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data));
+          alert(`🎬 Benvingut ${data.username}! Sessió iniciada correctament`);
+          console.log(' Token guardat:', data.token);
+        } else {
+          alert(` ${data.message || 'Error desconegut'}`);
+        }
+      } catch (error) {
+        loadingEl.classList.add('hidden');
+        alert('❌ Error de connexió. Comprova que el backend estigui actiu (http://localhost:3000)');
+        console.error('Error:', error);
+      }
+    };
+
+    // Logout
+    document.getElementById('logout-btn').onclick = () => {
+      localStorage.clear();
+      location.reload();
+    };
+
+    // Check si ya está logueado
+    window.onload = () => {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('username-display').textContent = userData.username;
+        document.getElementById('nav-user').classList.remove('hidden');
+        document.getElementById('nav-normal').classList.add('hidden');
+        document.getElementById('auth-section').classList.add('hidden');
+      }
+    };
+  </script>
+</body>
+</html>
