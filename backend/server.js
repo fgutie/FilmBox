@@ -73,17 +73,68 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
+// ⭐ SCROLL INFINITO - PELÍCULAS TMDB (PAGINADAS)
+app.get('/api/movies', async (req, res) => {
+  try {
+    const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
+    const page = parseInt(req.query.page) || 1;
+    
+    console.log(`📱 Cargando página ${page} de TMDB...`);
+    
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=es-ES&page=${page}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('TMDB API error');
+    }
+    
+    const tmdbData = await response.json();
+    
+    // Transformar datos TMDB → tu formato
+    const movies = tmdbData.results.map(movie => ({
+      title: movie.title,
+      year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
+      avgrating: movie.vote_average,
+      posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
+      genre: 'Drama, Ci-Fi, Acció, Thriller' // Simplificado
+    }));
+    
+    res.json({ 
+      movies, 
+      page: tmdbData.page,
+      total_pages: tmdbData.total_pages,
+      total_results: tmdbData.total_results 
+    });
+    
+  } catch (error) {
+    console.error('TMDB Error:', error);
+    // FALLBACK hardcodeado
+    res.json({ 
+      movies: [
+        { title: "Oppenheimer", year: 2023, avgrating: 8.4, posterurl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDyehytLc12u9dH.jpg", genre: "Drama" },
+        { title: "Dune: Part Two", year: 2024, avgrating: 8.7, posterurl: "https://image.tmdb.org/t/p/w500/gP1KDofOlLzdXaV9wHMiHFjhd.jpg", genre: "Ci-Fi" }
+      ],
+      page: 1,
+      total_pages: 1,
+      total_results: 2 
+    });
+  }
+});
+
 // Test API
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'FilmBox API OK ', 
+    message: 'FilmBox API OK - SCROLL INFINITO ✅', 
     usersCount: users.length,
-    users: users.map(u => ({ username: u.username, email: u.email }))
+    users: users.map(u => ({ username: u.username, email: u.email })),
+    movies_endpoint: 'GET /api/movies?page=1'
   });
 });
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(` http://localhost:${PORT}`);
-  console.log(' Usuaris:', users.length);
+  console.log(`🚀 http://localhost:${PORT}`);
+  console.log('👥 Usuaris:', users.length);
+  console.log('🎬 TMDB Scroll Infinito ACTIVO');
 });

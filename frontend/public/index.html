@@ -11,32 +11,33 @@
   <!-- Header -->
   <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer" onclick="showSection('peliculas')">
         🎬 FilmBox
       </h1>
       
-      <!-- Nav normal -->
+      <!-- Nav normal (solo invitados) -->
       <nav id="nav-normal" class="hidden md:flex space-x-6">
-        <a href="#" class="hover:text-green-400 transition">Pel·lícules</a>
-        <a href="#" class="hover:text-green-400 transition">Llistes</a>
-        <a href="#" class="hover:text-green-400 transition">Perfil</a>
+        <a href="#" onclick="showSection('peliculas')" class="hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
+        <a href="#" onclick="showSection('llistes')" class="hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="#" onclick="showSection('perfil')" class="hover:text-green-400 transition cursor-pointer">Perfil</a>
       </nav>
 
       <!-- Nav usuario logueado -->
-      <div id="nav-user" class="hidden items-center space-x-4">
+      <nav id="nav-user" class="hidden md:flex space-x-6 items-center">
         <span id="username-display" class="text-green-400 font-semibold"></span>
-        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition">
+        <a href="#" onclick="showSection('peliculas')" class="hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
+        <a href="#" onclick="showSection('llistes')" class="hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="#" onclick="showSection('perfil')" class="hover:text-green-400 transition cursor-pointer">Perfil</a>
+        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
           Tancar sessió
         </button>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <!-- Login/Register Form -->
+  <!-- Login/Register Form (solo invitados) -->
   <main id="auth-section" class="max-w-md mx-auto mt-20 p-8">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
-      
-      <!-- Logo/Título -->
       <div class="text-center mb-8">
         <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto mb-4"></div>
         <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
@@ -45,13 +46,12 @@
         <p class="text-gray-400 mt-2">La teva plataforma de cine social</p>
       </div>
 
-      <!-- Formulari registre/login -->
       <form id="auth-form" class="space-y-6">
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Usuari</label>
           <input type="text" id="username-input"
                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
-                 placeholder="El teu nom d'usuari" required>
+                 placeholder="El teu nom d'usuari">
         </div>
         
         <div>
@@ -82,11 +82,28 @@
     </div>
   </main>
 
-  <!-- Mensaje loading -->
+  <!-- 🎬 PÁGINA PRINCIPAL - CATÁLOGO -->
+  <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-20 hidden">
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
+        🎥 Descobreix les millors pel·lícules
+      </h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        Explora el catàleg, apunta les teves preferides i comparteix les teves opinions amb la comunitat.
+      </p>
+    </div>
+
+    <!-- Grid de contenido dinámico -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 mb-12">
+      <!-- Contenido se carga aquí -->
+    </div>
+  </main>
+
+  <!-- Loading -->
   <div id="loading" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/20 border border-white/30 rounded-2xl p-8 text-center">
       <div class="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white">Connectant amb el servidor...</p>
+      <p class="text-white" id="loading-text">Carregant...</p>
     </div>
   </div>
 
@@ -98,30 +115,186 @@
     const API_BASE = 'http://localhost:3000/api';
     let isLoginMode = true;
 
+    // ⭐ CARGAR PELÍCULAS
+    // ⭐ SCROLL INFINITO COMPLETO
+let currentPage = 1;
+let isLoading = false;
+let allMoviesLoaded = false;
+let allMovies = [];
+
+// Cargar películas iniciales
+async function loadMovies() {
+  currentPage = 1;
+  allMoviesLoaded = false;
+  allMovies = [];
+  
+  const grid = document.querySelector('#main-content .grid');
+  grid.innerHTML = '';
+  
+  try {
+    const response = await fetch(`${API_BASE}/movies?page=1`);
+    const data = await response.json();
+    
+    allMovies = data.movies;
+    data.movies.forEach(movie => {
+      grid.appendChild(createMovieCard(movie));
+    });
+    
+    if (data.total_pages <= 1) {
+      allMoviesLoaded = true;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Cargar MÁS películas al hacer scroll
+async function loadMoreMovies() {
+  if (isLoading || allMoviesLoaded) return;
+  
+  isLoading = true;
+  currentPage++;
+  
+  try {
+    const response = await fetch(`${API_BASE}/movies?page=${currentPage}`);
+    const data = await response.json();
+    
+    data.movies.forEach(movie => {
+      document.querySelector('#main-content .grid').appendChild(createMovieCard(movie));
+      allMovies.push(movie);
+    });
+    
+    if (currentPage >= data.total_pages) {
+      allMoviesLoaded = true;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    isLoading = false;
+  }
+}
+
+// ⭐ DETECTAR SCROLL
+window.addEventListener('scroll', () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+    loadMoreMovies();
+  }
+});
+
+
+    // ⭐ TARJETA PELÍCULA
+    function createMovieCard(movie) {
+      const card = document.createElement('div');
+      card.className = 'group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer';
+      
+      card.innerHTML = `
+        <div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-4 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+          <img src="${movie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}" 
+               alt="${movie.title}" 
+               class="w-full h-full object-cover" 
+               onerror="this.src='https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'">
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-green-400 transition">${movie.title}</h3>
+        <p class="text-gray-400 mb-3">${movie.year || '????'}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-2xl font-bold text-green-400">${movie.avgrating?.toFixed(1) || 'N/A'}</span>
+          <div class="flex items-center space-x-1 text-sm text-gray-400">
+            <span>⭐</span>
+            <span>${movie.genre || 'Gènere'}</span>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // ⭐ NAVEGACIÓN
+    function showSection(section) {
+      document.getElementById('main-content').classList.remove('hidden');
+      
+      if (section === 'peliculas') {
+      loadMovies(); // ← Llama a la nueva función
+}
+    }
+
+    // ⭐ PERFIL
+    function showProfile() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const grid = document.querySelector('#main-content .grid');
+      grid.innerHTML = `
+        <div class="col-span-full max-w-2xl mx-auto bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl p-12 text-center">
+          <div class="w-32 h-32 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto mb-8"></div>
+          <h2 class="text-4xl font-bold text-white mb-4">${user.username}</h2>
+          <p class="text-xl text-gray-300 mb-8">${user.email}</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="bg-white/10 rounded-xl p-4">
+              <div class="text-2xl font-bold text-green-400">12</div>
+              <div class="text-gray-300">Pel·lícules vistes</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4">
+              <div class="text-2xl font-bold text-blue-400">3</div>
+              <div class="text-gray-300">Llistes</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4">
+              <div class="text-2xl font-bold text-purple-400">156</div>
+              <div class="text-gray-300">Followers</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4">
+              <div class="text-2xl font-bold text-yellow-400">89</div>
+              <div class="text-gray-300">Seguint</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ⭐ LLISTES
+    function showLists() {
+      const grid = document.querySelector('#main-content .grid');
+      grid.innerHTML = `
+        <div class="col-span-full max-w-4xl mx-auto">
+          <h2 class="text-4xl font-bold text-white mb-12 text-center">📋 Les meves llistes</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+              <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-green-400">Top 2024 🔥</h3>
+              <p class="text-gray-400 mb-6">Les millors pel·lícules de l'any</p>
+              <div class="flex space-x-2 mb-4">
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+              </div>
+              <div class="text-sm text-gray-400">12 pel·lícules</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+              <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-green-400">Clàssics Imperdibles</h3>
+              <p class="text-gray-400 mb-6">Obres maestres del cinema</p>
+              <div class="flex space-x-2 mb-4">
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+                <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>
+              </div>
+              <div class="text-sm text-gray-400">28 pel·lícules</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     // Toggle register/login
     document.getElementById('toggle-mode').onclick = () => {
       isLoginMode = !isLoginMode;
-      const submitBtn = document.getElementById('submit-btn');
-      const toggleBtn = document.getElementById('toggle-mode');
-      
-      if (isLoginMode) {
-        submitBtn.textContent = 'Iniciar Sessió';
-        toggleBtn.textContent = "No tens compte? Registra't";
-      } else {
-        submitBtn.textContent = 'Registrar';
-        toggleBtn.textContent = "Ja tens compte? Inicia sessió";
-      }
+      document.getElementById('submit-btn').textContent = isLoginMode ? 'Iniciar Sessió' : 'Registrar';
+      document.getElementById('toggle-mode').textContent = isLoginMode ? "No tens compte? Registra't" : "Ja tens compte? Inicia sessió";
+      updateFormMode();
     };
 
     // Form submit
     document.getElementById('auth-form').onsubmit = async (e) => {
       e.preventDefault();
-      
       const username = document.getElementById('username-input').value.trim();
       const email = document.getElementById('email-input').value.trim();
       const password = document.getElementById('password-input').value;
       
-      if (!username || !email || !password) {
+      if ((!isLoginMode && !username) || !email || !password) {
         alert('Omple tots els camps');
         return;
       }
@@ -131,14 +304,12 @@
       
       try {
         loadingEl.classList.remove('hidden');
-        
         const response = await fetch(`${API_BASE}/${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             username: isLoginMode ? undefined : username,
-            email, 
-            password 
+            email, password 
           })
         });
 
@@ -148,17 +319,30 @@
         if (response.ok) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data));
-          alert(`🎬 Benvingut ${data.username}! Sessió iniciada correctament`);
-          console.log(' Token guardat:', data.token);
+          renderLoggedUser();
         } else {
-          alert(` ${data.message || 'Error desconegut'}`);
+          alert(data.message || 'Error desconegut');
         }
       } catch (error) {
         loadingEl.classList.add('hidden');
-        alert('❌ Error de connexió. Comprova que el backend estigui actiu (http://localhost:3000)');
-        console.error('Error:', error);
+        alert('Error de connexió');
       }
     };
+
+    // Renderizar usuario logueado
+    function renderLoggedUser() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('username-display').textContent = userData.username;
+        
+        document.getElementById('nav-user').classList.remove('hidden');
+        document.getElementById('nav-normal').classList.add('hidden');
+        document.getElementById('auth-section').classList.add('hidden');
+        
+        showSection('peliculas'); // Cargar películas por defecto
+      }
+    }
 
     // Logout
     document.getElementById('logout-btn').onclick = () => {
@@ -166,16 +350,13 @@
       location.reload();
     };
 
-    // Check si ya está logueado
+    function updateFormMode() {
+      document.getElementById('username-input').required = !isLoginMode;
+    }
+
     window.onload = () => {
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        document.getElementById('username-display').textContent = userData.username;
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('nav-normal').classList.add('hidden');
-        document.getElementById('auth-section').classList.add('hidden');
-      }
+      updateFormMode();
+      renderLoggedUser();
     };
   </script>
 </body>
