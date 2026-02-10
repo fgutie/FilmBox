@@ -23,11 +23,11 @@
       </nav>
 
       <!-- Nav usuario logueado -->
-      <nav id="nav-user" class="hidden md:flex space-x-6 items-center">
+      <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
         <span id="username-display" class="text-green-400 font-semibold"></span>
-        <a href="#" onclick="showSection('peliculas')" class="hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
-        <a href="#" onclick="showSection('llistes')" class="hover:text-green-400 transition cursor-pointer">Llistes</a>
-        <a href="#" onclick="showSection('perfil')" class="hover:text-green-400 transition cursor-pointer">Perfil</a>
+        <a href="#" onclick="showSection('peliculas')" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
+        <a href="#" onclick="showSection('llistes')" class="text-white hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="#" onclick="showSection('perfil')" class="text-white hover:text-green-400 transition cursor-pointer">Perfil</a>
         <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
           Tancar sessió
         </button>
@@ -83,7 +83,7 @@
   </main>
 
   <!-- 🎬 PÁGINA PRINCIPAL - CATÁLOGO -->
-  <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-20 hidden">
+  <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-96 hidden">
     <div class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
         🎥 Descobreix les millors pel·lícules
@@ -107,16 +107,58 @@
     </div>
   </div>
 
-  <footer class="absolute bottom-0 w-full bg-black/50 backdrop-blur-md border-t border-gray-800 p-4 text-center text-sm text-gray-400">
-    © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
+  <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 p-8 z-40">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <!-- Sobre FilmBox -->
+        <div class="text-center md:text-left">
+          <h4 class="text-white font-bold text-lg mb-2">Sobre FilmBox</h4>
+          <p class="text-gray-400 text-sm">La teva plataforma de cine social on compartir opinions i descobrir noves pel·lícules.</p>
+        </div>
+        
+        <!-- Enlaces rápidos -->
+        <div class="text-center">
+          <h4 class="text-white font-bold text-lg mb-3">Enllaços ràpids</h4>
+          <div class="flex justify-center space-x-6 text-gray-400 text-sm">
+            <a href="#" onclick="showSection('peliculas')" class="hover:text-green-400 transition">Pel·lícules</a>
+            <a href="#" onclick="showSection('llistes')" class="hover:text-green-400 transition">Llistes</a>
+            <a href="#" onclick="showSection('perfil')" class="hover:text-green-400 transition">Perfil</a>
+          </div>
+        </div>
+        
+        <!-- Redes Sociales -->
+        <div class="text-center md:text-right">
+          <h4 class="text-white font-bold text-lg mb-3">Segueix-nos</h4>
+          <div class="flex justify-center md:justify-end space-x-4">
+            <a href="#" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110" title="Facebook">
+              f
+            </a>
+            <a href="#" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110" title="Instagram">
+              📷
+            </a>
+            <a href="#" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110" title="TikTok">
+              🎵
+            </a>
+            <a href="#" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110" title="YouTube">
+              ▶️
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Copyright -->
+      <div class="border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+        © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
+      </div>
+    </div>
   </footer>
 
   <script>
     const API_BASE = 'http://localhost:3000/api';
     let isLoginMode = true;
 
-    // ⭐ CARGAR PELÍCULAS
-    // ⭐ SCROLL INFINITO COMPLETO
+    // CARGAR PELÍCULAS
+    // SCROLL INFINITO COMPLETO
 let currentPage = 1;
 let isLoading = false;
 let allMoviesLoaded = false;
@@ -174,7 +216,7 @@ async function loadMoreMovies() {
   }
 }
 
-// ⭐ DETECTAR SCROLL
+// DETECTAR SCROLL
 window.addEventListener('scroll', () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
     loadMoreMovies();
@@ -182,7 +224,7 @@ window.addEventListener('scroll', () => {
 });
 
 
-    // ⭐ TARJETA PELÍCULA
+    // TARJETA PELÍCULA
     function createMovieCard(movie) {
       const card = document.createElement('div');
       card.className = 'group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer';
@@ -207,16 +249,20 @@ window.addEventListener('scroll', () => {
       return card;
     }
 
-    // ⭐ NAVEGACIÓN
+    // NAVEGACIÓN
     function showSection(section) {
       document.getElementById('main-content').classList.remove('hidden');
       
       if (section === 'peliculas') {
-      loadMovies(); // ← Llama a la nueva función
-}
+        loadMovies();
+      } else if (section === 'llistes') {
+        showLists();
+      } else if (section === 'perfil') {
+        showProfile();
+      }
     }
 
-    // ⭐ PERFIL
+    // PERFIL
     function showProfile() {
       const user = JSON.parse(localStorage.getItem('user'));
       const grid = document.querySelector('#main-content .grid');
@@ -247,7 +293,7 @@ window.addEventListener('scroll', () => {
       `;
     }
 
-    // ⭐ LLISTES
+    // LLISTES
     function showLists() {
       const grid = document.querySelector('#main-content .grid');
       grid.innerHTML = `
@@ -255,7 +301,7 @@ window.addEventListener('scroll', () => {
           <h2 class="text-4xl font-bold text-white mb-12 text-center">📋 Les meves llistes</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
-              <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-green-400">Top 2024 🔥</h3>
+              <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-green-400">Top 2024</h3>
               <p class="text-gray-400 mb-6">Les millors pel·lícules de l'any</p>
               <div class="flex space-x-2 mb-4">
                 <div class="w-12 h-16 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg"></div>

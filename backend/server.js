@@ -73,7 +73,7 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
-// ⭐ SCROLL INFINITO - PELÍCULAS TMDB (PAGINADAS)
+// SCROLL INFINITO - PELÍCULAS TMDB (PAGINADAS)
 app.get('/api/movies', async (req, res) => {
   try {
     const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
@@ -125,7 +125,7 @@ app.get('/api/movies', async (req, res) => {
 // Test API
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'FilmBox API OK - SCROLL INFINITO ✅', 
+    message: 'FilmBox API OK - SCROLL INFINITO TMDB ACTIVO', 
     usersCount: users.length,
     users: users.map(u => ({ username: u.username, email: u.email })),
     movies_endpoint: 'GET /api/movies?page=1'
