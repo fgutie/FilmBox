@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmBox - Les meves llistes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
+  
+  <!-- Header -->
+  <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer" onclick="window.location.href='index.html'">
+        🎬 FilmBox
+      </h1>
+      
+      <!-- Nav usuario logueado -->
+      <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
+        <span id="username-display" class="text-green-400 font-semibold"></span>
+        <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
+        <a href="lists.html" class="text-white hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="profile.html" class="text-white hover:text-green-400 transition cursor-pointer">Perfil</a>
+        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
+          Tancar sessió
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- LLISTES SECTION -->
+  <main class="max-w-7xl mx-auto p-8 pt-24 pb-96">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex justify-between items-center mb-12">
+        <div>
+          <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            📋 Les meves llistes
+          </h1>
+          <p class="text-xl text-gray-300">
+            Organitza les teves pel·lícules favorites en llistes personalitzades
+          </p>
+        </div>
+        <button id="btn-create-list" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-fit whitespace-nowrap">
+          + Crear llista
+        </button>
+      </div>
+      
+      <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Las listas se cargan aquí dinámicamente -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal crear lista -->
+  <div id="modal-create-list" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl">
+      <h2 class="text-2xl font-bold text-white mb-6">Crear nova llista</h2>
+      <form id="form-create-list" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Nom de la llista</label>
+          <input type="text" id="list-name"
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 placeholder="Ej: Top 2024" required>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Descripció (opcional)</label>
+          <textarea id="list-description"
+                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500 resize-none" 
+                    placeholder="Afegeix una descripció..." rows="3"></textarea>
+        </div>
+        
+        <div class="flex gap-3">
+          <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 rounded-xl transition-all">
+            Crear
+          </button>
+          <button type="button" id="btn-close-modal" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">
+            Tancar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 py-3 px-4 md:py-4 md:px-8 z-40">
+    <div class="max-w-7xl mx-auto">
+      <!-- Mostrar grid solo en pantallas medianas y grandes -->
+      <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <!-- Sobre FilmBox -->
+        <div class="text-center md:text-left">
+          <h4 class="text-white font-bold text-sm mb-1">Sobre FilmBox</h4>
+          <p class="text-gray-400 text-xs">La teva plataforma de cine social on compartir opinions i descobrir noves pel·lícules.</p>
+        </div>
+        
+        <!-- Enlaces rápidos -->
+        <div class="text-center">
+          <h4 class="text-white font-bold text-sm mb-2">Enllaços ràpids</h4>
+          <div class="flex justify-center space-x-4 text-gray-400 text-xs">
+            <a href="index.html" class="hover:text-green-400 transition">Pel·lícules</a>
+            <a href="lists.html" class="hover:text-green-400 transition">Llistes</a>
+            <a href="profile.html" class="hover:text-green-400 transition">Perfil</a>
+          </div>
+        </div>
+        
+        <!-- Redes Sociales -->
+        <div class="text-center md:text-right">
+          <h4 class="text-white font-bold text-sm mb-2">Segueix-nos</h4>
+          <div class="flex justify-center md:justify-end space-x-2">
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Facebook">f</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Instagram">📷</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="TikTok">🎵</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="YouTube">▶️</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Copyright - siempre visible -->
+      <div class="border-t border-gray-700 pt-2 md:pt-3 text-center text-xs text-gray-500">
+        © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+
+    // Renderizar usuario logueado
+    function renderLoggedUser() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('username-display').textContent = userData.username;
+        document.getElementById('nav-user').classList.remove('hidden');
+        loadUserLists();
+      } else {
+        // Si no hay usuario, redirigir al login
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Cargar listas del usuario
+    function loadUserLists() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userData = localStorage.getItem(`lists_${user._id}`);
+      const lists = userData ? JSON.parse(userData) : [];
+      
+      const container = document.getElementById('lists-container');
+      container.innerHTML = '';
+      
+      if (lists.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center text-gray-400 py-12"><p>No tens cap llista encara. Crea\'n una per començar!</p></div>';
+        return;
+      }
+      
+      lists.forEach(list => {
+        const card = document.createElement('div');
+        card.className = 'bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 group cursor-pointer';
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-2xl font-bold text-white group-hover:text-green-400">${list.name}</h3>
+            <button class="text-gray-400 hover:text-red-400 transition" onclick="deleteList(${list.id})">✕</button>
+          </div>
+          <p class="text-gray-400 mb-6 text-sm">${list.description || 'Sense descripció'}</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            ${list.movies.slice(0, 3).map(m => `<img src="${m.posterurl}" alt="${m.title}" class="w-12 h-16 rounded-lg object-cover">`).join('')}
+            ${list.movies.length > 3 ? `<div class="w-12 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-xs text-gray-300">+${list.movies.length - 3}</div>` : ''}
+          </div>
+          <div class="flex justify-between items-center text-sm text-gray-400">
+            <span>${list.movies.length} pel·lícules</span>
+            <button onclick="openListDetail(${list.id})" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition text-xs">Veure</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Modal crear lista
+    const modal = document.getElementById('modal-create-list');
+    document.getElementById('btn-create-list').onclick = () => modal.classList.remove('hidden');
+    document.getElementById('btn-close-modal').onclick = () => modal.classList.add('hidden');
+
+    document.getElementById('form-create-list').onsubmit = (e) => {
+      e.preventDefault();
+      const user = JSON.parse(localStorage.getItem('user'));
+      const name = document.getElementById('list-name').value;
+      const description = document.getElementById('list-description').value;
+      
+      const userData = localStorage.getItem(`lists_${user._id}`);
+      const lists = userData ? JSON.parse(userData) : [];
+      
+      const newList = {
+        id: Date.now(),
+        name,
+        description,
+        movies: [],
+        createdAt: new Date().toISOString()
+      };
+      
+      lists.push(newList);
+      localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
+      
+      document.getElementById('form-create-list').reset();
+      modal.classList.add('hidden');
+      loadUserLists();
+    };
+
+    function deleteList(id) {
+      if (confirm('¿Estás seguro de que quieres eliminar esta lista?')) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const userData = localStorage.getItem(`lists_${user._id}`);
+        let lists = userData ? JSON.parse(userData) : [];
+        lists = lists.filter(l => l.id !== id);
+        localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
+        loadUserLists();
+      }
+    }
+
+    function openListDetail(listId) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      localStorage.setItem('currentListId', listId);
+      window.location.href = 'list-detail.html';
+    }
+
+    // Logout
+    document.getElementById('logout-btn').onclick = () => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    };
+
+    window.onload = () => {
+      renderLoggedUser();
+    };
+  </script>
+</body>
+</html>
