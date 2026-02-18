@@ -81,9 +81,15 @@
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
         🎥 Descobreix les millors pel·lícules
       </h1>
-      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
         Explora el catàleg, apunta les teves preferides i comparteix les teves opinions amb la comunitat.
       </p>
+      
+      <!-- Buscador de películas -->
+      <div class="max-w-2xl mx-auto mb-12">
+        <input type="text" id="search-movie-input" placeholder="Busca una película..." 
+               class="w-full px-6 py-4 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500 text-white">
+      </div>
     </div>
 
     <!-- Grid de contenido dinámico -->
@@ -215,6 +221,7 @@ window.addEventListener('scroll', () => {
     function createMovieCard(movie) {
       const card = document.createElement('div');
       card.className = 'group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer';
+      card.onclick = () => openMovieDetail(movie);
       
       card.innerHTML = `
         <div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-4 overflow-hidden group-hover:scale-105 transition-transform duration-300">
@@ -235,6 +242,55 @@ window.addEventListener('scroll', () => {
       `;
       return card;
     }
+
+    function openMovieDetail(movie) {
+      localStorage.setItem('currentMovie', JSON.stringify(movie));
+      window.location.href = 'movie-detail.html';
+    }
+
+    // Buscador de películas en tiempo real
+    let searchTimeout;
+    async function searchMovies(query) {
+      if (!query || query.length < 2) {
+        loadMovies();
+        return;
+      }
+
+      try {
+        const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
+        const response = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=es-ES&query=${encodeURIComponent(query)}&page=1`
+        );
+        const data = await response.json();
+        
+        const grid = document.querySelector('#main-content .grid');
+        grid.innerHTML = '';
+        
+        data.results.forEach(movie => {
+          const movieObj = {
+            id: movie.id,
+            title: movie.title,
+            year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
+            avgrating: movie.vote_average,
+            posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
+            genre: 'Película',
+            overview: movie.overview,
+            release_date: movie.release_date
+          };
+          grid.appendChild(createMovieCard(movieObj));
+        });
+      } catch (error) {
+        console.error('Error en búsqueda:', error);
+      }
+    }
+
+    // Escuchar el input de búsqueda
+    document.getElementById('search-movie-input').oninput = (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        searchMovies(e.target.value);
+      }, 500);
+    };
 
     // NAVEGACIÓN - Solo películas en este archivo
     function showSection(section) {

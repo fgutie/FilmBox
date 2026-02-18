@@ -188,35 +188,76 @@
       }
     }
 
+    // Buscar películas en TMDB en tiempo real
+    async function searchMoviesFromTMDB(query) {
+      if (!query || query.length < 2) {
+        displayAvailableMovies(availableMovies);
+        return;
+      }
+
+      try {
+        const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
+        const response = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=es-ES&query=${encodeURIComponent(query)}&page=1`
+        );
+        const data = await response.json();
+        
+        const movies = data.results.map(movie => ({
+          id: movie.id,
+          title: movie.title,
+          year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
+          avgrating: movie.vote_average,
+          posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
+          genre: 'Película'
+        }));
+        
+        displayAvailableMovies(movies);
+      } catch (error) {
+        console.error('Error en búsqueda:', error);
+        // Fallback: buscar localmente
+        const filtered = availableMovies.filter(m => 
+          m.title.toLowerCase().includes(query.toLowerCase())
+        );
+        displayAvailableMovies(filtered);
+      }
+    }
+
     // Modal para agregar película
     const modal = document.getElementById('modal-add-movie');
     document.getElementById('btn-add-movie').onclick = () => {
       modal.classList.remove('hidden');
       displayAvailableMovies(availableMovies);
     };
-    document.getElementById('btn-close-add-modal').onclick = () => modal.classList.add('hidden');
+    document.getElementById('btn-close-add-modal').onclick = () => {
+      modal.classList.add('hidden');
+      document.getElementById('search-movies').value = '';
+    };
 
-    // Buscar películas
+    // Buscar películas - llamar a la API en tiempo real
     document.getElementById('search-movies').oninput = (e) => {
-      const query = e.target.value.toLowerCase();
-      const filtered = availableMovies.filter(m => m.title.toLowerCase().includes(query));
-      displayAvailableMovies(filtered);
+      const query = e.target.value;
+      searchMoviesFromTMDB(query);
     };
 
     function displayAvailableMovies(movies) {
       const container = document.getElementById('movies-list');
       container.innerHTML = '';
       
+      if (movies.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-4">No es troben resultats</p>';
+        return;
+      }
+      
       movies.forEach(movie => {
-        const alreadyInList = currentList.movies.some(m => m.title === movie.title);
+        const alreadyInList = currentList.movies.some(m => m.id === movie.id);
         const item = document.createElement('div');
-        item.className = `p-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition flex justify-between items-center ${alreadyInList ? 'opacity-50' : 'cursor-pointer'}`;
+        item.className = `p-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition flex justify-between items-center ${alreadyInList ? 'opacity-50' : ''}`;
         item.innerHTML = `
           <div class="flex-1">
             <p class="text-white font-semibold text-sm">${movie.title}</p>
             <p class="text-gray-400 text-xs">${movie.year} • ⭐ ${movie.avgrating?.toFixed(1) || 'N/A'}</p>
           </div>
-          <button onclick="addMovieToList(${JSON.stringify(movie).replace(/"/g, '&quot;')})" ${alreadyInList ? 'disabled' : ''} class="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 text-white px-3 py-1 rounded text-xs transition">
+          <button onclick="addMovieToList(${JSON.stringify(movie).replace(/"/g, '&quot;')})" ${alreadyInList ? 'disabled' : ''} class="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-3 py-1 rounded text-xs transition">
             ${alreadyInList ? '✓' : '+'}
           </button>
         `;
@@ -231,12 +272,17 @@
       
       const listIndex = lists.findIndex(l => l.id == currentList.id);
       if (listIndex !== -1) {
-        if (!lists[listIndex].movies.some(m => m.title === movie.title)) {
+        if (!lists[listIndex].movies.some(m => m.id === movie.id)) {
           lists[listIndex].movies.push(movie);
           localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
           currentList = lists[listIndex];
           displayMovies(currentList.movies);
           displayAvailableMovies(availableMovies);
+          
+          // Mostrar confirmación y cerrar modal
+          const modal = document.getElementById('modal-add-movie');
+          modal.classList.add('hidden');
+          document.getElementById('search-movies').value = '';
         }
       }
     }

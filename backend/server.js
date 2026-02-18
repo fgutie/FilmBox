@@ -79,7 +79,7 @@ app.get('/api/movies', async (req, res) => {
     const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
     const page = parseInt(req.query.page) || 1;
     
-    console.log(`📱 Cargando página ${page} de TMDB...`);
+    console.log(`Cargando página ${page} de TMDB...`);
     
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=es-ES&page=${page}`
@@ -97,7 +97,7 @@ app.get('/api/movies', async (req, res) => {
       year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
       avgrating: movie.vote_average,
       posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-      genre: 'Drama, Ci-Fi, Acció, Thriller' // Simplificado
+      genre: 'Drama, Ci-Fi, Acció, Thriller, Comedia, Terror, Fantasia, Romance, Documental, Aventura, Musical' 
     }));
     
     res.json({ 
@@ -134,7 +134,7 @@ app.get('/', (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 http://localhost:${PORT}`);
-  console.log('👥 Usuaris:', users.length);
-  console.log('🎬 TMDB Scroll Infinito ACTIVO');
+  console.log(` http://localhost:${PORT}`);
+  console.log(' Usuaris:', users.length);
+  console.log(' TMDB Scroll Infinito ACTIVO');
 });

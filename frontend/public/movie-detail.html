@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmBox - Detall de película</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
+  
+  <!-- Header -->
+  <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer" onclick="window.location.href='index.html'">
+        🎬 FilmBox
+      </h1>
+      
+      <!-- Nav usuario logueado -->
+      <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
+        <span id="username-display" class="text-green-400 font-semibold"></span>
+        <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
+        <a href="lists.html" class="text-white hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="profile.html" class="text-white hover:text-green-400 transition cursor-pointer">Perfil</a>
+        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
+          Tancar sessió
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MOVIE DETAIL SECTION -->
+  <main class="max-w-6xl mx-auto p-8 pt-24 pb-96">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <!-- Poster -->
+      <div>
+        <img id="movie-poster" src="" alt="" class="w-full rounded-2xl shadow-2xl border border-white/20">
+      </div>
+      
+      <!-- Información -->
+      <div class="md:col-span-2">
+        <h1 id="movie-title" class="text-5xl md:text-6xl font-bold text-white mb-4">---</h1>
+        
+        <div class="flex flex-wrap gap-4 mb-8">
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2">
+            <p id="movie-year" class="text-gray-300">Año: ---</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2">
+            <p id="movie-rating" class="text-green-400 font-bold">Rating: N/A</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2">
+            <p id="movie-genre" class="text-gray-300">Película</p>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-white mb-4">Sinopsis</h2>
+          <p id="movie-description" class="text-gray-300 leading-relaxed text-lg">
+            ---
+          </p>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex gap-4 flex-wrap">
+          <button id="btn-add-to-list" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+            ➕ Afegir a llista
+          </button>
+          <button id="btn-rate" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+            ⭐ Puntuar
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-12 grid grid-cols-2 gap-6">
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 text-center">
+            <p class="text-gray-400 text-sm mb-2">Valoración TMDB</p>
+            <p id="tmdb-rating" class="text-4xl font-bold text-green-400">N/A</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 text-center">
+            <p class="text-gray-400 text-sm mb-2">Mi valoración</p>
+            <p id="my-rating" class="text-4xl font-bold text-yellow-400">---</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal para seleccionar lista -->
+  <div id="modal-select-list" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl max-h-96 overflow-y-auto">
+      <h2 class="text-2xl font-bold text-white mb-6">Selecciona una llista</h2>
+      <div id="lists-select" class="space-y-2">
+        <!-- Las listas se cargan aquí -->
+      </div>
+      <button type="button" id="btn-close-modal" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all mt-4">
+        Tancar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal para puntuar -->
+  <div id="modal-rate" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl">
+      <h2 class="text-2xl font-bold text-white mb-6">¿Cuánto te gustó?</h2>
+      <div class="flex justify-center gap-2 mb-6">
+        <button onclick="setRating(1)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
+        <button onclick="setRating(2)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
+        <button onclick="setRating(3)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
+        <button onclick="setRating(4)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
+        <button onclick="setRating(5)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
+      </div>
+      <button type="button" id="btn-close-rate-modal" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">
+        Tancar
+      </button>
+    </div>
+  </div>
+
+  <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 py-3 px-4 md:py-4 md:px-8 z-40">
+    <div class="max-w-7xl mx-auto">
+      <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="text-center md:text-left">
+          <h4 class="text-white font-bold text-sm mb-1">Sobre FilmBox</h4>
+          <p class="text-gray-400 text-xs">La teva plataforma de cine social on compartir opinions i descobrir noves pel·lícules.</p>
+        </div>
+        <div class="text-center">
+          <h4 class="text-white font-bold text-sm mb-2">Enllaços ràpids</h4>
+          <div class="flex justify-center space-x-4 text-gray-400 text-xs">
+            <a href="index.html" class="hover:text-green-400 transition">Pel·lícules</a>
+            <a href="lists.html" class="hover:text-green-400 transition">Llistes</a>
+            <a href="profile.html" class="hover:text-green-400 transition">Perfil</a>
+          </div>
+        </div>
+        <div class="text-center md:text-right">
+          <h4 class="text-white font-bold text-sm mb-2">Segueix-nos</h4>
+          <div class="flex justify-center md:justify-end space-x-2">
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">f</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">📷</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">🎵</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">▶️</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 pt-2 md:pt-3 text-center text-xs text-gray-500">
+        © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+    let currentMovie = null;
+
+    // Cargar película actual
+    function loadMovieDetail() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('username-display').textContent = userData.username;
+        document.getElementById('nav-user').classList.remove('hidden');
+      }
+
+      const movieData = localStorage.getItem('currentMovie');
+      if (!movieData) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentMovie = JSON.parse(movieData);
+      
+      document.getElementById('movie-title').textContent = currentMovie.title;
+      document.getElementById('movie-year').textContent = `Año: ${currentMovie.year}`;
+      document.getElementById('movie-rating').textContent = `Rating: ${currentMovie.avgrating?.toFixed(1) || 'N/A'}`;
+      document.getElementById('movie-description').textContent = currentMovie.overview || 'Sin descripción disponible';
+      document.getElementById('movie-poster').src = currentMovie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image';
+      document.getElementById('tmdb-rating').textContent = (currentMovie.avgrating || 0).toFixed(1);
+      
+      const userRating = localStorage.getItem(`movie-rating-${currentMovie.id}`);
+      if (userRating) {
+        document.getElementById('my-rating').textContent = userRating + '/5';
+      }
+
+      loadUserLists();
+    }
+
+    // Cargar listas del usuario para agregar película
+    function loadUserLists() {
+      const user = localStorage.getItem('user');
+      if (!user) return;
+
+      const userData = JSON.parse(user);
+      const listsData = localStorage.getItem(`lists_${userData._id}`);
+      const lists = listsData ? JSON.parse(listsData) : [];
+      
+      const container = document.getElementById('lists-select');
+      container.innerHTML = '';
+      
+      if (lists.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-4">No tienes listas. Crea una primero!</p>';
+        return;
+      }
+
+      lists.forEach(list => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full p-4 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition text-white text-left font-semibold';
+        btn.textContent = `📋 ${list.name}`;
+        btn.onclick = () => addMovieToList(list.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function addMovieToList(listId) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const listsData = localStorage.getItem(`lists_${user._id}`);
+      let lists = listsData ? JSON.parse(listsData) : [];
+      
+      const listIndex = lists.findIndex(l => l.id == listId);
+      if (listIndex !== -1) {
+        if (!lists[listIndex].movies.some(m => m.id === currentMovie.id)) {
+          lists[listIndex].movies.push(currentMovie);
+          localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
+          document.getElementById('modal-select-list').classList.add('hidden');
+          alert('✓ Película añadida a la lista!');
+        } else {
+          alert('Esta película ya está en esa lista');
+        }
+      }
+    }
+
+    let currentRating = 0;
+    function setRating(stars) {
+      currentRating = stars;
+      const starButtons = document.querySelectorAll('.star');
+      starButtons.forEach((btn, index) => {
+        if (index < stars) {
+          btn.classList.add('text-yellow-400');
+        } else {
+          btn.classList.remove('text-yellow-400');
+        }
+      });
+    }
+
+    // Botones de acción
+    document.getElementById('btn-add-to-list').onclick = () => {
+      document.getElementById('modal-select-list').classList.remove('hidden');
+    };
+
+    document.getElementById('btn-close-modal').onclick = () => {
+      document.getElementById('modal-select-list').classList.add('hidden');
+    };
+
+    document.getElementById('btn-rate').onclick = () => {
+      document.getElementById('modal-rate').classList.remove('hidden');
+      const userRating = localStorage.getItem(`movie-rating-${currentMovie.id}`);
+      if (userRating) {
+        for (let i = 0; i < parseInt(userRating); i++) {
+          document.querySelectorAll('.star')[i].classList.add('text-yellow-400');
+        }
+        currentRating = parseInt(userRating);
+      }
+    };
+
+    document.getElementById('btn-close-rate-modal').onclick = () => {
+      if (currentRating > 0) {
+        localStorage.setItem(`movie-rating-${currentMovie.id}`, currentRating);
+        document.getElementById('my-rating').textContent = currentRating + '/5';
+      }
+      document.getElementById('modal-rate').classList.add('hidden');
+      document.querySelectorAll('.star').forEach(btn => btn.classList.remove('text-yellow-400'));
+      currentRating = 0;
+    };
+
+    // Logout
+    document.getElementById('logout-btn').onclick = () => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    };
+
+    window.onload = () => {
+      loadMovieDetail();
+    };
+  </script>
+</body>
+</html>
