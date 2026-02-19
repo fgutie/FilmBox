@@ -91,14 +91,26 @@ app.get('/api/movies', async (req, res) => {
     
     const tmdbData = await response.json();
     
-    // Transformar datos TMDB → tu formato
-    const movies = tmdbData.results.map(movie => ({
-      title: movie.title,
-      year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
-      avgrating: movie.vote_average,
-      posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-      genre: 'Drama, Ci-Fi, Acció, Thriller, Comedia, Terror, Fantasia, Romance, Documental, Aventura, Musical' 
-    }));
+    // Obtener mapa de géneros desde TMDB y transformar datos TMDB → tu formato
+    const genresResponse = await fetch(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=es-ES`
+    );
+    const genresData = genresResponse.ok ? await genresResponse.json() : { genres: [] };
+    const genreMap = {};
+    (genresData.genres || []).forEach(g => { genreMap[g.id] = g.name; });
+
+    const movies = tmdbData.results.map(movie => {
+      const genreNames = (movie.genre_ids || []).map(id => genreMap[id]).filter(Boolean);
+      return {
+        id: movie.id,
+        title: movie.title,
+        year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
+        avgrating: movie.vote_average,
+        posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
+        genre: genreNames.length ? genreNames.join(', ') : 'Desconocido',
+        overview: movie.overview || ''
+      };
+    });
     
     res.json({ 
       movies, 
@@ -112,8 +124,8 @@ app.get('/api/movies', async (req, res) => {
     // FALLBACK hardcodeado
     res.json({ 
       movies: [
-        { title: "Oppenheimer", year: 2023, avgrating: 8.4, posterurl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDyehytLc12u9dH.jpg", genre: "Drama" },
-        { title: "Dune: Part Two", year: 2024, avgrating: 8.7, posterurl: "https://image.tmdb.org/t/p/w500/gP1KDofOlLzdXaV9wHMiHFjhd.jpg", genre: "Ci-Fi" }
+        { id: 1, title: "Oppenheimer", year: 2023, avgrating: 8.4, posterurl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDyehytLc12u9dH.jpg", genre: "Drama", overview: "Biopic sobre la vida de J. Robert Oppenheimer." },
+        { id: 2, title: "Dune: Part Two", year: 2024, avgrating: 8.7, posterurl: "https://image.tmdb.org/t/p/w500/gP1KDofOlLzdXaV9wHMiHFjhd.jpg", genre: "Ci-Fi", overview: "Segunda parte de la adaptación de Dune." }
       ],
       page: 1,
       total_pages: 1,
