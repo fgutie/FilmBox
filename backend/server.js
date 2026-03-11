@@ -1,12 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Simular usuarios (SIN MONGODB por ahora)
+// ✅ SIRVE FRONTEND ESTÁTICO (ANTES de las APIs)
+app.use(express.static(path.join(__dirname, '../frontend/public')));
+
+// Simular usuarios 
 let users = [];
 
 // REGISTER 
@@ -16,13 +20,11 @@ app.post('/api/users/register', async (req, res) => {
     
     const { username, email, password } = req.body;
     
-    // Check si existe
     const userExists = users.find(u => u.email === email);
     if (userExists) {
       return res.status(400).json({ message: 'Usuari ja existeix' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const newUser = {
@@ -73,7 +75,7 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
-// SCROLL INFINITO - PELÍCULAS TMDB (PAGINADAS)
+// SCROLL INFINITO - PELÍCULAS TMDB
 app.get('/api/movies', async (req, res) => {
   try {
     const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
@@ -91,7 +93,6 @@ app.get('/api/movies', async (req, res) => {
     
     const tmdbData = await response.json();
     
-    // Obtener mapa de géneros desde TMDB y transformar datos TMDB → tu formato
     const genresResponse = await fetch(
       `https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=es-ES`
     );
@@ -121,7 +122,6 @@ app.get('/api/movies', async (req, res) => {
     
   } catch (error) {
     console.error('TMDB Error:', error);
-    // FALLBACK hardcodeado
     res.json({ 
       movies: [
         { id: 1, title: "Oppenheimer", year: 2023, avgrating: 8.4, posterurl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDyehytLc12u9dH.jpg", genre: "Drama", overview: "Biopic sobre la vida de J. Robert Oppenheimer." },
@@ -134,19 +134,14 @@ app.get('/api/movies', async (req, res) => {
   }
 });
 
-// Test API
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'FilmBox API OK - SCROLL INFINITO TMDB ACTIVO', 
-    usersCount: users.length,
-    users: users.map(u => ({ username: u.username, email: u.email })),
-    movies_endpoint: 'GET /api/movies?page=1'
-  });
+// ✅ SPA ROUTING - SOLO para rutas NO-API (DESPUÉS de todas las APIs)
+app.get(['/', '/movie-detail.html', '/lists.html', '/list-detail.html', '/profile.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(` http://localhost:${PORT}`);
+  console.log(`🚀 FilmBox COMPLETO http://localhost:${PORT}`);
   console.log(' Usuaris:', users.length);
   console.log(' TMDB Scroll Infinito ACTIVO');
 });

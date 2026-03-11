@@ -75,7 +75,7 @@
     </div>
   </main>
 
-  <!-- 🎬 PÁGINA PRINCIPAL - CATÁLOGO -->
+  <!-- pagina principal con scroll de peliculas -->
   <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-96 hidden">
     <div class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
@@ -130,10 +130,10 @@
         <div class="text-center md:text-right">
           <h4 class="text-white font-bold text-sm mb-2">Segueix-nos</h4>
           <div class="flex justify-center md:justify-end space-x-2">
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Facebook">f</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Instagram">📷</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="TikTok">🎵</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="YouTube">▶️</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Facebook">Facebook</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Instagram">Instagram</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="TikTok">TikTok</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="YouTube">YouTube</a>
           </div>
         </div>
       </div>
@@ -217,7 +217,7 @@ window.addEventListener('scroll', () => {
 });
 
 
-    // TARJETA PELÍCULA
+    // tarjeta de cada pelicula
     function createMovieCard(movie) {
       const card = document.createElement('div');
       card.className = 'group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer';
