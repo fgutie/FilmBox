@@ -2,78 +2,27 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const path = require('path');
+require('dotenv').config();
+
+const { connectDB } = require('./src/config/db');
+const userRoutes = require('./src/routes/users');
+const listRoutes = require('./src/routes/lists');
 
 const app = express();
+
+// Conectar a SQLite
+connectDB();
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// ✅ SIRVE FRONTEND ESTÁTICO (ANTES de las APIs)
+// FRONTEND ESTÁTICO (ANTES de las APIs)
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
-// Simular usuarios 
-let users = [];
-
-// REGISTER 
-app.post('/api/users/register', async (req, res) => {
-  try {
-    console.log(' REGISTER:', req.body);
-    
-    const { username, email, password } = req.body;
-    
-    const userExists = users.find(u => u.email === email);
-    if (userExists) {
-      return res.status(400).json({ message: 'Usuari ja existeix' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const newUser = {
-      _id: Date.now().toString(),
-      username,
-      email,
-      password: hashedPassword
-    };
-    
-    users.push(newUser);
-    console.log(' USUARIO CREADO:', newUser.username);
-    
-    res.status(201).json({
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      token: 'fake_jwt_' + newUser._id
-    });
-  } catch (error) {
-    console.error(' REGISTER ERROR:', error);
-    res.status(500).json({ message: 'Error servidor' });
-  }
-});
-
-// LOGIN 
-app.post('/api/users/login', async (req, res) => {
-  try {
-    console.log(' LOGIN:', req.body);
-    
-    const { email, password } = req.body;
-    const user = users.find(u => u.email === email);
-    
-    if (user && await bcrypt.compare(password, user.password)) {
-      console.log(' LOGIN OK:', user.username);
-      res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        token: 'fake_jwt_' + user._id
-      });
-    } else {
-      console.log(' LOGIN FALLIDO');
-      res.status(401).json({ message: 'Credencials incorrectes' });
-    }
-  } catch (error) {
-    console.error(' LOGIN ERROR:', error);
-    res.status(500).json({ message: 'Error servidor' });
-  }
-});
+// Rutas de API
+app.use('/api/users', userRoutes);
+app.use('/api/lists', listRoutes);
 
 // SCROLL INFINITO - PELÍCULAS TMDB
 app.get('/api/movies', async (req, res) => {
@@ -134,14 +83,14 @@ app.get('/api/movies', async (req, res) => {
   }
 });
 
-// ✅ SPA ROUTING - SOLO para rutas NO-API (DESPUÉS de todas las APIs)
+//  SPA ROUTING - SOLO para rutas NO-API (DESPUÉS de todas las APIs)
 app.get(['/', '/movie-detail.html', '/lists.html', '/list-detail.html', '/profile.html'], (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 FilmBox COMPLETO http://localhost:${PORT}`);
-  console.log(' Usuaris:', users.length);
+  console.log(`FilmBox COMPLETO http://localhost:${PORT}`);
+  console.log(' SQLite conectado - Base de datos en archivo');
   console.log(' TMDB Scroll Infinito ACTIVO');
 });

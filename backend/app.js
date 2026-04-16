@@ -10,7 +10,7 @@ app.use(express.json());
 
 // Ruta de prueba
 app.get('/', (req, res) => {
-  res.send('FilmBox API funcionando 🚀');
+  res.send('FilmBox API funcionando ');
 });
 
 module.exports = app;

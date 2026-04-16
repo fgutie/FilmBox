@@ -123,23 +123,26 @@
     }
 
     // Cargar detalles de la lista
-    function loadListDetail() {
-      const user = JSON.parse(localStorage.getItem('user'));
+    async function loadListDetail() {
       const listId = localStorage.getItem('currentListId');
-      const userData = localStorage.getItem(`lists_${user._id}`);
-      const lists = userData ? JSON.parse(userData) : [];
       
-      currentList = lists.find(l => l.id == listId);
-      
-      if (!currentList) {
+      try {
+        const response = await fetch(`${API_BASE}/lists/${listId}`);
+        currentList = await response.json();
+        
+        if (!currentList) {
+          window.location.href = 'lists.html';
+          return;
+        }
+        
+        document.getElementById('list-title').textContent = currentList.name;
+        document.getElementById('list-description').textContent = currentList.description || 'Sense descripció';
+        
+        displayMovies(currentList.movies);
+      } catch (error) {
+        console.error('Error cargando lista:', error);
         window.location.href = 'lists.html';
-        return;
       }
-      
-      document.getElementById('list-title').textContent = currentList.name;
-      document.getElementById('list-description').textContent = currentList.description || 'Sense descripció';
-      
-      displayMovies(currentList.movies);
     }
 
     // Mostrar películas de la lista
@@ -265,17 +268,17 @@
       });
     }
 
-    function addMovieToList(movie) {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const userData = localStorage.getItem(`lists_${user._id}`);
-      let lists = userData ? JSON.parse(userData) : [];
-      
-      const listIndex = lists.findIndex(l => l.id == currentList.id);
-      if (listIndex !== -1) {
-        if (!lists[listIndex].movies.some(m => m.id === movie.id)) {
-          lists[listIndex].movies.push(movie);
-          localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
-          currentList = lists[listIndex];
+    async function addMovieToList(movie) {
+      try {
+        const response = await fetch(`${API_BASE}/lists/add-movie`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listId: currentList._id, movie })
+        });
+        
+        if (response.ok) {
+          const updatedList = await response.json();
+          currentList = updatedList;
           displayMovies(currentList.movies);
           displayAvailableMovies(availableMovies);
           
@@ -283,23 +286,33 @@
           const modal = document.getElementById('modal-add-movie');
           modal.classList.add('hidden');
           document.getElementById('search-movies').value = '';
+        } else {
+          alert('Error agregando película');
         }
+      } catch (error) {
+        console.error('Error:', error);
       }
     }
 
-    function removeMovieFromList(movieId) {
-      if (confirm('¿Estás seguro de que quieres eliminar esta película de la lista?')) {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const userData = localStorage.getItem(`lists_${user._id}`);
-        let lists = userData ? JSON.parse(userData) : [];
+    async function removeMovieFromList(movieId) {
+      if (!confirm('¿Eliminar esta película de la lista?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/lists/remove-movie`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listId: currentList._id, movieId })
+        });
         
-        const listIndex = lists.findIndex(l => l.id == currentList.id);
-        if (listIndex !== -1) {
-          lists[listIndex].movies = lists[listIndex].movies.filter(m => m.id !== movieId);
-          localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
-          currentList = lists[listIndex];
+        if (response.ok) {
+          const updatedList = await response.json();
+          currentList = updatedList;
           displayMovies(currentList.movies);
+        } else {
+          alert('Error eliminando película');
         }
+      } catch (error) {
+        console.error('Error:', error);
       }
     }
 

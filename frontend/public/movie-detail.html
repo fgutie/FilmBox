@@ -183,46 +183,52 @@
     }
 
     // Cargar listas del usuario para agregar película
-    function loadUserLists() {
+    async function loadUserLists() {
       const user = localStorage.getItem('user');
       if (!user) return;
 
       const userData = JSON.parse(user);
-      const listsData = localStorage.getItem(`lists_${userData._id}`);
-      const lists = listsData ? JSON.parse(listsData) : [];
       
-      const container = document.getElementById('lists-select');
-      container.innerHTML = '';
-      
-      if (lists.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center py-4">No tienes listas. Crea una primero!</p>';
-        return;
-      }
+      try {
+        const response = await fetch(`${API_BASE}/lists/user/${userData._id}`);
+        const lists = await response.json();
+        
+        const container = document.getElementById('lists-select');
+        container.innerHTML = '';
+        
+        if (lists.length === 0) {
+          container.innerHTML = '<p class="text-gray-400 text-center py-4">No tienes listas. Crea una primero!</p>';
+          return;
+        }
 
-      lists.forEach(list => {
-        const btn = document.createElement('button');
-        btn.className = 'w-full p-4 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition text-white text-left font-semibold';
-        btn.textContent = `📋 ${list.name}`;
-        btn.onclick = () => addMovieToList(list.id);
-        container.appendChild(btn);
-      });
+        lists.forEach(list => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full p-4 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition text-white text-left font-semibold';
+          btn.textContent = `📋 ${list.name}`;
+          btn.onclick = () => addMovieToList(list._id);
+          container.appendChild(btn);
+        });
+      } catch (error) {
+        console.error('Error cargando listas:', error);
+      }
     }
 
-    function addMovieToList(listId) {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const listsData = localStorage.getItem(`lists_${user._id}`);
-      let lists = listsData ? JSON.parse(listsData) : [];
-      
-      const listIndex = lists.findIndex(l => l.id == listId);
-      if (listIndex !== -1) {
-        if (!lists[listIndex].movies.some(m => m.id === currentMovie.id)) {
-          lists[listIndex].movies.push(currentMovie);
-          localStorage.setItem(`lists_${user._id}`, JSON.stringify(lists));
+    async function addMovieToList(listId) {
+      try {
+        const response = await fetch(`${API_BASE}/lists/add-movie`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listId, movie: currentMovie })
+        });
+        
+        if (response.ok) {
           document.getElementById('modal-select-list').classList.add('hidden');
-          alert('✓ Película añadida a la lista!');
+          alert('Película agregada a la lista!');
         } else {
-          alert('Esta película ya está en esa lista');
+          alert('Error agregando película');
         }
+      } catch (error) {
+        console.error('Error:', error);
       }
     }
 

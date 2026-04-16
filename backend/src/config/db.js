@@ -1,13 +1,21 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
+
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './database.sqlite', // Archivo de base de datos en el directorio backend
+  logging: console.log, // Para ver las consultas en la consola
+});
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log(' MongoDB connectat - FilmBox');
+    await sequelize.authenticate();
+    console.log('SQLite conectado - FilmBox');
+    await sequelize.sync(); // Sincroniza los modelos con la base de datos
   } catch (error) {
-    console.error(' MongoDB Error:', error);
+    console.error('SQLite Error:', error);
     process.exit(1);
   }
 };
 
-module.exports = connectDB;
+module.exports = { sequelize, connectDB };
