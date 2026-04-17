@@ -1,26 +1,44 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
-const User = require('./User');
+const mongoose = require('mongoose');
 
-const List = sequelize.define('List', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const movieSchema = new mongoose.Schema(
+  {
+    id: { type: Number, required: true },
+    title: { type: String, required: true },
+    year: { type: [String, Number], default: '????' },
+    avgrating: { type: Number, default: 0 },
+    posterurl: { type: String, default: '' },
+    genre: { type: String, default: 'Desconocido' },
+    overview: { type: String, default: '' },
+    release_date: { type: String, default: '' },
   },
-  description: {
-    type: DataTypes.TEXT,
-    defaultValue: '',
-  },
-  movies: {
-    type: DataTypes.JSON, // Array de objetos de películas
-    defaultValue: [],
-  },
-}, {
-  timestamps: true,
-});
+  { _id: false }
+);
 
-// Relación con User
-List.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(List, { foreignKey: 'userId' });
+const listSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    movies: {
+      type: [movieSchema],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = List;
+module.exports = mongoose.model('List', listSchema);

@@ -10,7 +10,7 @@ const listRoutes = require('./src/routes/lists');
 
 const app = express();
 
-// Conectar a SQLite
+
 connectDB();
 
 // Middlewares
@@ -91,6 +91,6 @@ app.get(['/', '/movie-detail.html', '/lists.html', '/list-detail.html', '/profil
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`FilmBox COMPLETO http://localhost:${PORT}`);
-  console.log(' SQLite conectado - Base de datos en archivo');
+  console.log(' MongoDB conectado');
   console.log(' TMDB Scroll Infinito ACTIVO');
 });

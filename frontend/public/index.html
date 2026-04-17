@@ -7,28 +7,25 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
-  
-  <!-- Header -->
+
   <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer">
+      <h1 id="home-link" class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer">
         🎬 FilmBox
       </h1>
-      
-      <!-- Nav usuario logueado -->
+
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
         <span id="username-display" class="text-green-400 font-semibold"></span>
         <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
         <a href="lists.html" class="text-white hover:text-green-400 transition cursor-pointer">Llistes</a>
         <a href="profile.html" class="text-white hover:text-green-400 transition cursor-pointer">Perfil</a>
-        <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
+        <button id="logout-btn" type="button" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
           Tancar sessió
         </button>
       </nav>
     </div>
   </header>
 
-  <!-- Login/Register Form (solo invitados) -->
   <main id="auth-section" class="max-w-md mx-auto mt-20 p-8 pb-80">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
       <div class="text-center mb-8">
@@ -40,24 +37,24 @@
       </div>
 
       <form id="auth-form" class="space-y-6">
-        <div>
+        <div id="username-field">
           <label class="block text-sm font-medium text-gray-300 mb-2">Usuari</label>
           <input type="text" id="username-input"
-                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
                  placeholder="El teu nom d'usuari">
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Correu electrònic</label>
           <input type="email" id="email-input"
-                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
                  placeholder="usuari@exemple.com" required>
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Contrasenya</label>
           <input type="password" id="password-input"
-                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500" 
+                 class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
                  placeholder="••••••••" required>
         </div>
 
@@ -68,14 +65,13 @@
       </form>
 
       <div class="mt-8 text-center">
-        <button id="toggle-mode" class="text-green-400 hover:text-green-300 font-semibold text-sm">
+        <button id="toggle-mode" type="button" class="text-green-400 hover:text-green-300 font-semibold text-sm">
           No tens compte? Registra't
         </button>
       </div>
     </div>
   </main>
 
-  <!-- pagina principal con scroll de peliculas -->
   <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-96 hidden">
     <div class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
@@ -84,21 +80,16 @@
       <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
         Explora el catàleg, apunta les teves preferides i comparteix les teves opinions amb la comunitat.
       </p>
-      
-      <!-- Buscador de películas -->
+
       <div class="max-w-2xl mx-auto mb-12">
-        <input type="text" id="search-movie-input" placeholder="Busca una película..." 
+        <input type="text" id="search-movie-input" placeholder="Busca una película..."
                class="w-full px-6 py-4 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500 text-white">
       </div>
     </div>
 
-    <!-- Grid de contenido dinámico -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 mb-12">
-      <!-- Contenido se carga aquí -->
-    </div>
+    <div id="movies-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 mb-12"></div>
   </main>
 
-  <!-- Loading -->
   <div id="loading" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/20 border border-white/30 rounded-2xl p-8 text-center">
       <div class="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -108,15 +99,12 @@
 
   <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 py-3 px-4 md:py-4 md:px-8 z-40">
     <div class="max-w-7xl mx-auto">
-      <!-- Mostrar grid solo en pantallas medianas y grandes -->
       <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <!-- Sobre FilmBox -->
         <div class="text-center md:text-left">
           <h4 class="text-white font-bold text-sm mb-1">Sobre FilmBox</h4>
           <p class="text-gray-400 text-xs">La teva plataforma de cine social on compartir opinions i descobrir noves pel·lícules.</p>
         </div>
-        
-        <!-- Enlaces rápidos -->
+
         <div class="text-center">
           <h4 class="text-white font-bold text-sm mb-2">Enllaços ràpids</h4>
           <div class="flex justify-center space-x-4 text-gray-400 text-xs">
@@ -125,20 +113,18 @@
             <a href="profile.html" class="hover:text-green-400 transition">Perfil</a>
           </div>
         </div>
-        
-        <!-- Redes Sociales -->
+
         <div class="text-center md:text-right">
           <h4 class="text-white font-bold text-sm mb-2">Segueix-nos</h4>
           <div class="flex justify-center md:justify-end space-x-2">
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Facebook">Facebook</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="Instagram">Instagram</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="TikTok">TikTok</a>
-            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs" title="YouTube">YouTube</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">Facebook</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">Instagram</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">TikTok</a>
+            <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">YouTube</a>
           </div>
         </div>
       </div>
-      
-      <!-- Copyright - siempre visible -->
+
       <div class="border-t border-gray-700 pt-2 md:pt-3 text-center text-xs text-gray-500">
         © 2026 FilmBox - Francisco Gutiez Bueno - DAW Projecte Intermodular
       </div>
@@ -148,86 +134,47 @@
   <script>
     const API_BASE = 'http://localhost:3000/api';
     let isLoginMode = true;
+    let currentPage = 1;
+    let isLoading = false;
+    let allMoviesLoaded = false;
     let currentSection = 'peliculas';
+    let searchTimeout;
 
-    // CARGAR PELÍCULAS
-    // SCROLL INFINITO COMPLETO
-let currentPage = 1;
-let isLoading = false;
-let allMoviesLoaded = false;
-let allMovies = [];
+    const homeLink = document.getElementById('home-link');
+    const authSection = document.getElementById('auth-section');
+    const mainContent = document.getElementById('main-content');
+    const moviesGrid = document.getElementById('movies-grid');
+    const usernameField = document.getElementById('username-field');
+    const usernameInput = document.getElementById('username-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleModeBtn = document.getElementById('toggle-mode');
+    const loadingEl = document.getElementById('loading');
 
-// Cargar películas iniciales
-async function loadMovies() {
-  currentPage = 1;
-  allMoviesLoaded = false;
-  allMovies = [];
-  
-  const grid = document.querySelector('#main-content .grid');
-  grid.innerHTML = '';
-  
-  try {
-    const response = await fetch(`${API_BASE}/movies?page=1`);
-    const data = await response.json();
-    
-    allMovies = data.movies;
-    data.movies.forEach(movie => {
-      grid.appendChild(createMovieCard(movie));
-    });
-    
-    if (data.total_pages <= 1) {
-      allMoviesLoaded = true;
+    function updateFormMode() {
+      usernameField.classList.toggle('hidden', isLoginMode);
+      usernameInput.required = !isLoginMode;
+      submitBtn.textContent = isLoginMode ? 'Iniciar Sessió' : 'Registrar';
+      toggleModeBtn.textContent = isLoginMode ? "No tens compte? Registra't" : 'Ja tens compte? Inicia sessió';
     }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
 
-// Cargar MÁS películas al hacer scroll
-async function loadMoreMovies() {
-  if (isLoading || allMoviesLoaded) return;
-  
-  isLoading = true;
-  currentPage++;
-  
-  try {
-    const response = await fetch(`${API_BASE}/movies?page=${currentPage}`);
-    const data = await response.json();
-    
-    data.movies.forEach(movie => {
-      document.querySelector('#main-content .grid').appendChild(createMovieCard(movie));
-      allMovies.push(movie);
-    });
-    
-    if (currentPage >= data.total_pages) {
-      allMoviesLoaded = true;
+    function showLoggedUI(userData) {
+      document.getElementById('username-display').textContent = userData.username;
+      document.getElementById('nav-user').classList.remove('hidden');
+      authSection.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+      loadMovies();
     }
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    isLoading = false;
-  }
-}
 
-// DETECTAR SCROLL - SOLO EN PELÍCULAS
-window.addEventListener('scroll', () => {
-  if (currentSection === 'peliculas' && window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
-    loadMoreMovies();
-  }
-});
-
-
-    // tarjeta de cada pelicula
     function createMovieCard(movie) {
       const card = document.createElement('div');
       card.className = 'group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer';
-      card.onclick = () => openMovieDetail(movie);
-      
+      card.addEventListener('click', () => openMovieDetail(movie));
+
       card.innerHTML = `
         <div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-4 overflow-hidden group-hover:scale-105 transition-transform duration-300">
-          <img src="${movie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}" 
-               alt="${movie.title}" 
-               class="w-full h-full object-cover" 
+          <img src="${movie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}"
+               alt="${movie.title}"
+               class="w-full h-full object-cover"
                onerror="this.src='https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'">
         </div>
         <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-green-400 transition">${movie.title}</h3>
@@ -248,8 +195,38 @@ window.addEventListener('scroll', () => {
       window.location.href = 'movie-detail.html';
     }
 
-    // Buscador de películas en tiempo real
-    let searchTimeout;
+    async function loadMovies() {
+      currentPage = 1;
+      allMoviesLoaded = false;
+      moviesGrid.innerHTML = '';
+
+      try {
+        const response = await fetch(`${API_BASE}/movies?page=1`);
+        const data = await response.json();
+        (data.movies || []).forEach(movie => moviesGrid.appendChild(createMovieCard(movie)));
+        if (!data.total_pages || data.total_pages <= 1) allMoviesLoaded = true;
+      } catch (error) {
+        console.error('Error carregant pel·lícules:', error);
+      }
+    }
+
+    async function loadMoreMovies() {
+      if (isLoading || allMoviesLoaded) return;
+      isLoading = true;
+      currentPage++;
+
+      try {
+        const response = await fetch(`${API_BASE}/movies?page=${currentPage}`);
+        const data = await response.json();
+        (data.movies || []).forEach(movie => moviesGrid.appendChild(createMovieCard(movie)));
+        if (currentPage >= (data.total_pages || 1)) allMoviesLoaded = true;
+      } catch (error) {
+        console.error('Error carregant més pel·lícules:', error);
+      } finally {
+        isLoading = false;
+      }
+    }
+
     async function searchMovies(query) {
       if (!query || query.length < 2) {
         loadMovies();
@@ -258,88 +235,68 @@ window.addEventListener('scroll', () => {
 
       try {
         const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
-        const response = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=es-ES&query=${encodeURIComponent(query)}&page=1`
-        );
+        const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=es-ES&query=${encodeURIComponent(query)}&page=1`);
         const data = await response.json();
-        
-        const grid = document.querySelector('#main-content .grid');
-        grid.innerHTML = '';
-        
-        data.results.forEach(movie => {
-          const movieObj = {
+
+        moviesGrid.innerHTML = '';
+        (data.results || []).forEach(movie => {
+          moviesGrid.appendChild(createMovieCard({
             id: movie.id,
             title: movie.title,
             year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
             avgrating: movie.vote_average,
             posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-            genre: 'Película',
-            overview: movie.overview,
-            release_date: movie.release_date
-          };
-          grid.appendChild(createMovieCard(movieObj));
+            genre: 'Pel·lícula',
+            overview: movie.overview || '',
+            release_date: movie.release_date || ''
+          }));
         });
       } catch (error) {
-        console.error('Error en búsqueda:', error);
+        console.error('Error en cerca:', error);
       }
     }
 
-    // Escuchar el input de búsqueda
-    document.getElementById('search-movie-input').oninput = (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        searchMovies(e.target.value);
-      }, 500);
-    };
-
-    // NAVEGACIÓN - Solo películas en este archivo
-    function showSection(section) {
-      currentSection = section;
-      document.getElementById('main-content').classList.remove('hidden');
-      loadMovies();
+    function renderLoggedUser() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        showLoggedUI(JSON.parse(user));
+      }
     }
 
-    // Toggle register/login
-    document.getElementById('toggle-mode').onclick = () => {
-      isLoginMode = !isLoginMode;
-      document.getElementById('submit-btn').textContent = isLoginMode ? 'Iniciar Sessió' : 'Registrar';
-      document.getElementById('toggle-mode').textContent = isLoginMode ? "No tens compte? Registra't" : "Ja tens compte? Inicia sessió";
-      updateFormMode();
-    };
-
-    // Form submit
-    document.getElementById('auth-form').onsubmit = async (e) => {
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = document.getElementById('username-input').value.trim();
+
+      const username = usernameInput.value.trim();
       const email = document.getElementById('email-input').value.trim();
       const password = document.getElementById('password-input').value;
-      
+
       if ((!isLoginMode && !username) || !email || !password) {
         alert('Omple tots els camps');
         return;
       }
 
       const endpoint = isLoginMode ? 'users/login' : 'users/register';
-      const loadingEl = document.getElementById('loading');
-      
+
       try {
         loadingEl.classList.remove('hidden');
+
+        const payload = isLoginMode
+          ? { email, password }
+          : { username, email, password };
+
         const response = await fetch(`${API_BASE}/${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            username: isLoginMode ? undefined : username,
-            email, password 
-          })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json();
         loadingEl.classList.add('hidden');
-        
+
         if (response.ok) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data));
-          renderLoggedUser();
+          showLoggedUI(data);
         } else {
           alert(data.message || 'Error desconegut');
         }
@@ -347,35 +304,37 @@ window.addEventListener('scroll', () => {
         loadingEl.classList.add('hidden');
         alert('Error de connexió');
       }
-    };
+    });
 
-    function renderLoggedUser() {
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        document.getElementById('username-display').textContent = userData.username;
-        
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('auth-section').classList.add('hidden');
-        
-        showSection('peliculas'); // Cargar películas por defecto
+    toggleModeBtn.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      updateFormMode();
+    });
+
+    document.getElementById('search-movie-input').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => searchMovies(e.target.value), 500);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (currentSection === 'peliculas' && window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+        loadMoreMovies();
       }
-    }
+    });
 
-    // Logout
-    document.getElementById('logout-btn').onclick = () => {
+    document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.clear();
       location.reload();
-    };
+    });
 
-    function updateFormMode() {
-      document.getElementById('username-input').required = !isLoginMode;
-    }
+    homeLink.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
 
-    window.onload = () => {
+    window.addEventListener('load', () => {
       updateFormMode();
       renderLoggedUser();
-    };
+    });
   </script>
 </body>
 </html>
