@@ -7,6 +7,7 @@ require('dotenv').config();
 const { connectDB } = require('./src/config/db');
 const userRoutes = require('./src/routes/users');
 const listRoutes = require('./src/routes/lists');
+const reviewRoutes = require('./src/routes/reviews');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '../frontend/public')));
 // Rutas de API
 app.use('/api/users', userRoutes);
 app.use('/api/lists', listRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // SCROLL INFINITO - PELÍCULAS TMDB
 app.get('/api/movies', async (req, res) => {

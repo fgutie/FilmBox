@@ -1,3 +1,4 @@
+"hace la lógica de crear listas, leer las listas de un usuario, añadir películas y borrarlas."
 const List = require('../models/List');
 
 exports.createList = async (req, res) => {

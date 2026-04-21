@@ -1,3 +1,4 @@
+"contiene la lógica de registro e inicio de sesión"
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 

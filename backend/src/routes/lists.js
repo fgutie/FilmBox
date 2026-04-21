@@ -1,3 +1,4 @@
+"define las rutas de listas: crear, ver por usuario, ver por id, añadir película, borrar película y eliminar lista."
 const express = require('express');
 const { createList, getUserLists, getListById, addMovieToList, removeMovieFromList, deleteList } = require('../controllers/listController');
 const router = express.Router();

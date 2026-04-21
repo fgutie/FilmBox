@@ -1,3 +1,4 @@
+"solo define las URLs del backend para autenticación"
 const express = require('express');
 const { register, login } = require('../controllers/authController');
 const router = express.Router();

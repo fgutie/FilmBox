@@ -1,3 +1,4 @@
+"define cómo es un usuario en la base de datos: username, email, password"
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -25,6 +26,18 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    bio: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 500,
+    },
+    favoriteMovies: [{
+      id: { type: Number, required: true },
+      title: { type: String, required: true },
+      posterurl: { type: String, default: '' },
+      year: { type: String, default: '????' },
+    }],
   },
   {
     timestamps: true,

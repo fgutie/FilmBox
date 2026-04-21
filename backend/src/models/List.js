@@ -1,3 +1,4 @@
+"define cómo es una lista de películas guarda el Id, ttulo, año la descripción y el array movies"
 const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema(
