@@ -1,32 +1,43 @@
+// URL base de la API del backend
 const API_BASE = 'http://localhost:3000/api';
+
+// Clave de API de TMDB para buscar películas externas
 const TMDB_API_KEY = 'f5cb4bd58b0a6754b238b1e9c5ac5b88';
+
+// Variables para guardar el estado actual de la página
 let currentListId = null;
 let currentList = null;
 let searchTimeout = null;
 
+// Obtiene el usuario guardado en localStorage
 function getCurrentUser() {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 }
 
+// Obtiene un parámetro concreto de la URL
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
   return params.get(name);
 }
 
+// Muestra el nombre del usuario en la interfaz
 function showLoggedUI(user) {
   document.getElementById('username-display').textContent = user.username || user.email || 'Usuari';
   document.getElementById('nav-user').classList.remove('hidden');
 }
 
+// Redirige al login si no hay usuario autenticado
 function redirectToLogin() {
   window.location.href = 'index.html';
 }
 
+// Redirige al listado general de listas
 function redirectToLists() {
   window.location.href = 'lists.html';
 }
 
+// Carga los datos de una lista concreta desde el backend
 async function loadListDetail() {
   const user = getCurrentUser();
   if (!user) {
@@ -34,7 +45,10 @@ async function loadListDetail() {
     return;
   }
 
+  // Muestra la UI del usuario conectado
   showLoggedUI(user);
+
+  // Obtiene el ID de la lista desde la URL
   currentListId = getQueryParam('id');
   if (!currentListId) {
     redirectToLists();
@@ -42,14 +56,20 @@ async function loadListDetail() {
   }
 
   try {
+    // Pide al backend la lista concreta
     const response = await fetch(`${API_BASE}/lists/${currentListId}`);
     if (!response.ok) {
       throw new Error('No s’ha pogut carregar la llista');
     }
 
+    // Guarda la lista cargada en memoria
     currentList = await response.json();
+
+    // Rellena el título y la descripción en la página
     document.getElementById('list-title').textContent = currentList.name || 'Llista sense nom';
     document.getElementById('list-description').textContent = currentList.description || 'Sense descripció disponible';
+
+    // Renderiza las películas que tenga la lista
     renderMovies(currentList.movies || []);
   } catch (error) {
     console.error('Error carregant la llista:', error);
@@ -57,15 +77,18 @@ async function loadListDetail() {
   }
 }
 
+// Pinta las películas de la lista en pantalla
 function renderMovies(movies) {
   const container = document.getElementById('movies-container');
   container.innerHTML = '';
 
+  // Si no hay películas, muestra un mensaje informativo
   if (!movies || movies.length === 0) {
     container.innerHTML = '<p class="text-white text-center col-span-full">Aquesta llista encara no té pel·lícules. Usa el botó + Afegir pel·lícula per començar.</p>';
     return;
   }
 
+  // Crea una tarjeta por cada película
   movies.forEach((movie) => {
     const card = document.createElement('div');
     card.className = 'bg-white/5 border border-white/10 rounded-3xl p-4 shadow-lg shadow-black/20';
@@ -78,6 +101,7 @@ function renderMovies(movies) {
       </div>
     `;
 
+    // Botón para eliminar esa película de la lista
     const removeButton = card.querySelector('.remove-movie-btn');
     removeButton.addEventListener('click', () => removeMovie(movie.id));
 
@@ -85,18 +109,23 @@ function renderMovies(movies) {
   });
 }
 
+// Abre el modal para añadir una película
 function openAddModal() {
   document.getElementById('modal-add-movie').classList.remove('hidden');
 }
 
+// Cierra el modal y limpia la búsqueda
 function closeAddModal() {
   document.getElementById('modal-add-movie').classList.add('hidden');
   document.getElementById('movies-list').innerHTML = '';
   document.getElementById('search-movies').value = '';
 }
 
+// Busca películas en TMDB según el texto escrito
 async function searchMovies(query) {
   const container = document.getElementById('movies-list');
+
+  // Si no hay texto, muestra un mensaje
   if (!query) {
     container.innerHTML = '<p class="text-gray-400 text-center py-4">Escriu alguna cosa per buscar pel·lícules.</p>';
     return;
@@ -105,15 +134,18 @@ async function searchMovies(query) {
   container.innerHTML = '<p class="text-gray-400 text-center py-4">Buscant...</p>';
 
   try {
+    // Consulta a TMDB para buscar películas
     const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=es-ES&query=${encodeURIComponent(query)}&page=1`);
     const data = await response.json();
     const results = data.results || [];
 
+    // Si no hay resultados, muestra mensaje
     if (results.length === 0) {
       container.innerHTML = '<p class="text-gray-400 text-center py-4">No s’han trobat pel·lícules.</p>';
       return;
     }
 
+    // Muestra cada resultado con botón para añadirlo
     container.innerHTML = '';
     results.forEach((movie) => {
       const item = document.createElement('div');
@@ -129,6 +161,7 @@ async function searchMovies(query) {
         </div>
       `;
 
+      // Botón para añadir esa película a la lista
       const addButton = item.querySelector('.add-movie-btn');
       addButton.addEventListener('click', () => addMovieToList(movie));
       container.appendChild(item);
@@ -139,12 +172,14 @@ async function searchMovies(query) {
   }
 }
 
+// Añade una película a la lista actual
 async function addMovieToList(movie) {
   if (!currentListId) {
     alert('Llista no disponible');
     return;
   }
 
+  // Prepara los datos de la película para guardarlos en MongoDB
   const payload = {
     listId: currentListId,
     movie: {
@@ -160,6 +195,7 @@ async function addMovieToList(movie) {
   };
 
   try {
+    // Envía la película al backend para guardarla en la lista
     const response = await fetch(`${API_BASE}/lists/add-movie`, {
       method: 'POST',
       headers: {
@@ -173,6 +209,7 @@ async function addMovieToList(movie) {
       throw new Error(errorData.message || 'No s’ha pogut afegir la pel·lícula');
     }
 
+    // Actualiza la lista en memoria y en pantalla
     currentList = await response.json();
     renderMovies(currentList.movies || []);
     alert('Pel·lícula afegida a la llista!');
@@ -183,10 +220,12 @@ async function addMovieToList(movie) {
   }
 }
 
+// Elimina una película concreta de la lista
 async function removeMovie(movieId) {
   if (!currentListId) return;
 
   try {
+    // Envía la orden de eliminación al backend
     const response = await fetch(`${API_BASE}/lists/remove-movie`, {
       method: 'POST',
       headers: {
@@ -200,6 +239,7 @@ async function removeMovie(movieId) {
       throw new Error(errorData.message || 'No s’ha pogut eliminar la pel·lícula');
     }
 
+    // Recarga la lista actualizada
     currentList = await response.json();
     renderMovies(currentList.movies || []);
   } catch (error) {
@@ -208,19 +248,24 @@ async function removeMovie(movieId) {
   }
 }
 
+// Registra los eventos de la página
 function setupEvents() {
   document.getElementById('btn-add-movie').addEventListener('click', openAddModal);
   document.getElementById('btn-close-add-modal').addEventListener('click', closeAddModal);
+
+  // Debounce para no buscar en cada tecla inmediatamente
   document.getElementById('search-movies').addEventListener('input', (event) => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => searchMovies(event.target.value.trim()), 500);
   });
 
+  // Cierra sesión y borra localStorage
   document.getElementById('logout-btn').addEventListener('click', () => {
     localStorage.clear();
     redirectToLogin();
   });
 
+  // Link a home si existe
   const homeLink = document.getElementById('home-link');
   if (homeLink) {
     homeLink.addEventListener('click', () => {
@@ -229,6 +274,7 @@ function setupEvents() {
   }
 }
 
+// Cuando carga la página, comprueba si hay usuario y abre la lista
 window.addEventListener('DOMContentLoaded', () => {
   const user = getCurrentUser();
   if (!user) {

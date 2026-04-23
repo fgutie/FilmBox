@@ -8,12 +8,15 @@
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
 
+  <!-- Cabecera superior con navegación -->
   <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <!-- Logo / enlace a inicio -->
       <h1 id="home-link" class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer">
         🎬 FilmBox
       </h1>
 
+      <!-- Menú visible cuando el usuario está autenticado -->
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
         <span id="username-display" class="text-green-400 font-semibold"></span>
         <a href="index.html" class="text-white hover:text-green-400 transition">Pel·lícules</a>
@@ -26,36 +29,51 @@
     </div>
   </header>
 
+  <!-- Contenido principal con detalle de la lista -->
   <main class="max-w-7xl mx-auto p-8 pt-24 pb-96">
     <div class="mb-12">
       <div class="flex justify-between items-start mb-8">
         <div>
+          <!-- Título de la lista -->
           <h1 id="list-title" class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             ---
           </h1>
+
+          <!-- Descripción de la lista -->
           <p id="list-description" class="text-xl text-gray-300">---</p>
         </div>
+
+        <!-- Botón para abrir el modal de añadir película -->
         <button id="btn-add-movie" type="button" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-fit whitespace-nowrap">
           + Afegir pel·lícula
         </button>
       </div>
 
+      <!-- Contenedor donde se renderizan las películas de la lista -->
       <div id="movies-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"></div>
     </div>
   </main>
 
+  <!-- Modal para buscar y añadir películas a la lista -->
   <div id="modal-add-movie" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl max-h-96 overflow-y-auto">
       <h2 class="text-2xl font-bold text-white mb-6">Selecciona una pel·lícula</h2>
+
+      <!-- Buscador de películas en TMDB -->
       <input type="text" id="search-movies" placeholder="Buscar pel·lícula..."
              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500 mb-4">
+
+      <!-- Contenedor donde se muestran los resultados de búsqueda -->
       <div id="movies-list" class="space-y-2"></div>
+
+      <!-- Botón para cerrar el modal -->
       <button type="button" id="btn-close-add-modal" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all mt-4">
         Tancar
       </button>
     </div>
   </div>
 
+  <!-- Pie de página fijo -->
   <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 py-3 px-4 md:py-4 md:px-8 z-40">
     <div class="max-w-7xl mx-auto">
       <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -90,6 +108,7 @@
     </div>
   </footer>
 
+  <!-- Script principal de la vista de detalle -->
   <script src="list-detail.js"></script>
 </body>
 </html>

@@ -1,19 +1,24 @@
+// URL base de la API del backend
 const API_BASE = 'http://localhost:3000/api';
 
+// Obtiene el usuario guardado en localStorage
 function getCurrentUser() {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 }
 
+// Muestra el nombre del usuario en la cabecera
 function showLoggedUI(user) {
   document.getElementById('username-display').textContent = user.username || user.email || 'Usuari';
   document.getElementById('nav-user').classList.remove('hidden');
 }
 
+// Redirige al login
 function redirectToLogin() {
   window.location.href = 'index.html';
 }
 
+// Carga las listas del usuario desde el backend
 async function loadUserLists() {
   const user = getCurrentUser();
   if (!user) {
@@ -25,6 +30,7 @@ async function loadUserLists() {
   listsContainer.innerHTML = '<p class="text-white text-center col-span-full">Carregant les teves llistes...</p>';
 
   try {
+    // Pide al backend todas las listas del usuario
     const response = await fetch(`${API_BASE}/lists/user/${user._id}`);
     if (!response.ok) {
       throw new Error('No s’han pogut carregar les llistes');
@@ -32,11 +38,13 @@ async function loadUserLists() {
 
     const lists = await response.json();
 
+    // Si no hay listas, muestra un mensaje
     if (!Array.isArray(lists) || lists.length === 0) {
       listsContainer.innerHTML = '<p class="text-white text-center col-span-full">No tens cap llista encara. Crea una llista per començar!</p>';
       return;
     }
 
+    // Muestra cada lista como una tarjeta
     listsContainer.innerHTML = '';
     lists.forEach((list) => {
       const card = document.createElement('div');
@@ -50,6 +58,7 @@ async function loadUserLists() {
         </div>
       `;
 
+      // Abre la página de detalle de esa lista
       const viewBtn = card.querySelector('.btn-view-list');
       viewBtn.addEventListener('click', () => {
         window.location.href = `list-detail.html?id=${list._id}`;
@@ -63,14 +72,17 @@ async function loadUserLists() {
   }
 }
 
+// Abre el modal para crear lista
 function openCreateModal() {
   document.getElementById('modal-create-list').classList.remove('hidden');
 }
 
+// Cierra el modal para crear lista
 function closeCreateModal() {
   document.getElementById('modal-create-list').classList.add('hidden');
 }
 
+// Crea una lista nueva
 async function handleCreateList(event) {
   event.preventDefault();
 
@@ -80,17 +92,20 @@ async function handleCreateList(event) {
     return;
   }
 
+  // Recoge nombre y descripción del formulario
   const nameInput = document.getElementById('list-name');
   const descriptionInput = document.getElementById('list-description');
   const name = nameInput.value.trim();
   const description = descriptionInput.value.trim();
 
+  // No permite crear una lista sin nombre
   if (!name) {
     alert('Introdueix un nom per la llista');
     return;
   }
 
   try {
+    // Envía la lista al backend para guardarla
     const response = await fetch(`${API_BASE}/lists`, {
       method: 'POST',
       headers: {
@@ -108,6 +123,7 @@ async function handleCreateList(event) {
       throw new Error(data.message || 'Error creant la llista');
     }
 
+    // Limpia el formulario y recarga la vista
     nameInput.value = '';
     descriptionInput.value = '';
     closeCreateModal();
@@ -118,15 +134,19 @@ async function handleCreateList(event) {
   }
 }
 
+// Registra eventos de la página
 function setupEvents() {
   document.getElementById('btn-create-list').addEventListener('click', openCreateModal);
   document.getElementById('btn-close-modal').addEventListener('click', closeCreateModal);
   document.getElementById('form-create-list').addEventListener('submit', handleCreateList);
+
+  // Cierra sesión
   document.getElementById('logout-btn').addEventListener('click', () => {
     localStorage.clear();
     redirectToLogin();
   });
 
+  // Vuelve a la página principal si el enlace existe
   const homeLink = document.getElementById('home-link');
   if (homeLink) {
     homeLink.addEventListener('click', () => {
@@ -135,6 +155,7 @@ function setupEvents() {
   }
 }
 
+// Al cargar la página, comprueba si hay usuario y carga sus listas
 window.addEventListener('DOMContentLoaded', () => {
   const user = getCurrentUser();
   if (!user) {

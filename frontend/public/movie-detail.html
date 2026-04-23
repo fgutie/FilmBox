@@ -8,14 +8,15 @@
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen">
   
-  <!-- Header -->
+  <!-- Cabecera superior -->
   <header class="bg-black/50 backdrop-blur-md border-b border-gray-800 p-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <!-- Logo que vuelve a la página principal -->
       <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer" onclick="window.location.href='index.html'">
         🎬 FilmBox
       </h1>
       
-      <!-- Nav usuario logueado -->
+      <!-- Navegación visible si el usuario está logueado -->
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
         <span id="username-display" class="text-green-400 font-semibold"></span>
         <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
@@ -28,18 +29,20 @@
     </div>
   </header>
 
-  <!-- MOVIE DETAIL SECTION -->
+  <!-- Sección principal con el detalle de la película -->
   <main class="max-w-6xl mx-auto p-8 pt-24 pb-96">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-      <!-- Poster -->
+      
+      <!-- Póster de la película -->
       <div>
         <img id="movie-poster" src="" alt="" class="w-full rounded-2xl shadow-2xl border border-white/20">
       </div>
       
-      <!-- Información -->
+      <!-- Información principal -->
       <div class="md:col-span-2">
         <h1 id="movie-title" class="text-5xl md:text-6xl font-bold text-white mb-4">---</h1>
         
+        <!-- Datos rápidos de la película -->
         <div class="flex flex-wrap gap-4 mb-8">
           <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2">
             <p id="movie-year" class="text-gray-300">Año: ---</p>
@@ -52,7 +55,7 @@
           </div>
         </div>
 
-        <!-- Descripción -->
+        <!-- Sinopsis -->
         <div class="mb-8">
           <h2 class="text-2xl font-bold text-white mb-4">Sinopsis</h2>
           <p id="movie-description" class="text-gray-300 leading-relaxed text-lg">
@@ -60,18 +63,20 @@
           </p>
         </div>
 
-        <!-- Botones de acción -->
+        <!-- Botones de acciones: lista, puntuación y review -->
         <div class="flex gap-4 flex-wrap">
           <button id="btn-add-to-list" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
             ➕ Afegir a llista
           </button>
           <button id="btn-rate" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
             ⭐ Puntuar
-          </button>          <button id="btn-review" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all">
+          </button>
+          <button id="btn-review" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all">
             ✍️ Review
-          </button>        </div>
+          </button>
+        </div>
 
-        <!-- Stats -->
+        <!-- Estadísticas de la película -->
         <div class="mt-12 grid grid-cols-2 gap-6">
           <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 text-center">
             <p class="text-gray-400 text-sm mb-2">Valoración TMDB</p>
@@ -86,12 +91,12 @@
     </div>
   </main>
 
-  <!-- Modal para seleccionar lista -->
+  <!-- Modal para seleccionar una lista -->
   <div id="modal-select-list" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl max-h-96 overflow-y-auto">
       <h2 class="text-2xl font-bold text-white mb-6">Selecciona una llista</h2>
       <div id="lists-select" class="space-y-2">
-        <!-- Las listas se cargan aquí -->
+        <!-- Aquí se renderizan las listas del usuario -->
       </div>
       <button type="button" id="btn-close-modal" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all mt-4">
         Tancar
@@ -99,7 +104,7 @@
     </div>
   </div>
 
-  <!-- Modal para puntuar -->
+  <!-- Modal para dar una puntuación -->
   <div id="modal-rate" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl">
       <h2 class="text-2xl font-bold text-white mb-6">¿Cuánto te gustó?</h2>
@@ -116,7 +121,7 @@
     </div>
   </div>
 
-  <!-- Modal para escribir review -->
+  <!-- Modal para escribir una review -->
   <div id="modal-review" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
       <h2 class="text-2xl font-bold text-white mb-6">Escriu la teva review</h2>
@@ -137,6 +142,7 @@
     </div>
   </div>
 
+  <!-- Pie de página fijo -->
   <footer class="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-md border-t border-gray-800 py-3 px-4 md:py-4 md:px-8 z-40">
     <div class="max-w-7xl mx-auto">
       <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -169,10 +175,13 @@
   </footer>
 
   <script>
+    // Base de la API del backend
     const API_BASE = 'http://localhost:3000/api';
+
+    // Objeto que guardará la película seleccionada
     let currentMovie = null;
 
-    // Cargar película actual
+    // Carga los datos de la película desde localStorage y rellena la interfaz
     function loadMovieDetail() {
       const user = localStorage.getItem('user');
       if (user) {
@@ -181,6 +190,7 @@
         document.getElementById('nav-user').classList.remove('hidden');
       }
 
+      // Si no hay película guardada, vuelve al inicio
       const movieData = localStorage.getItem('currentMovie');
       if (!movieData) {
         window.location.href = 'index.html';
@@ -189,6 +199,7 @@
 
       currentMovie = JSON.parse(movieData);
       
+      // Rellena los campos del detalle
       document.getElementById('movie-title').textContent = currentMovie.title;
       document.getElementById('movie-year').textContent = `Año: ${currentMovie.year}`;
       document.getElementById('movie-rating').textContent = `Rating: ${currentMovie.avgrating?.toFixed(1) || 'N/A'}`;
@@ -196,16 +207,18 @@
       document.getElementById('movie-poster').src = currentMovie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image';
       document.getElementById('tmdb-rating').textContent = (currentMovie.avgrating || 0).toFixed(1);
       
+      // Recupera la puntuación guardada localmente
       const userRating = localStorage.getItem(`movie-rating-${currentMovie.id}`);
       if (userRating) {
         document.getElementById('my-rating').textContent = userRating + '/5';
       }
 
+      // Carga review y listas del usuario
       loadUserReview();
       loadUserLists();
     }
 
-    // Cargar listas del usuario para agregar película
+    // Carga las listas del usuario para poder añadir la película
     async function loadUserLists() {
       const user = localStorage.getItem('user');
       if (!user) return;
@@ -219,11 +232,13 @@
         const container = document.getElementById('lists-select');
         container.innerHTML = '';
         
+        // Si no hay listas, muestra mensaje
         if (lists.length === 0) {
           container.innerHTML = '<p class="text-gray-400 text-center py-4">No tienes listas. Crea una primero!</p>';
           return;
         }
 
+        // Crea un botón por cada lista
         lists.forEach(list => {
           const btn = document.createElement('button');
           btn.className = 'w-full p-4 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition text-white text-left font-semibold';
@@ -236,6 +251,7 @@
       }
     }
 
+    // Carga la review del usuario para esta película
     async function loadUserReview() {
       const user = localStorage.getItem('user');
       if (!user) return;
@@ -248,7 +264,7 @@
         
         if (review) {
           document.getElementById('my-rating').textContent = review.rating + '/5';
-          // Guardar en localStorage para compatibilidad
+          // Guarda la puntuación localmente por compatibilidad
           localStorage.setItem(`movie-rating-${currentMovie.id}`, review.rating);
         }
       } catch (error) {
@@ -256,6 +272,7 @@
       }
     }
 
+    // Guarda una valoración en el backend
     async function saveRating(rating) {
       const user = localStorage.getItem('user');
       if (!user) {
@@ -275,7 +292,7 @@
             movieTitle: currentMovie.title,
             moviePoster: currentMovie.posterurl,
             rating: rating,
-            review: '' // Solo rating por ahora
+            review: '' // Solo puntuación, sin texto
           })
         });
 
@@ -294,6 +311,7 @@
       }
     }
 
+    // Guarda una review con texto
     async function saveReview(reviewText) {
       const user = localStorage.getItem('user');
       if (!user) {
@@ -331,6 +349,7 @@
       }
     }
 
+    // Guarda la selección de estrellas de forma local
     let currentRating = 0;
     function setRating(stars) {
       currentRating = stars;
@@ -344,15 +363,17 @@
       });
     }
 
-    // Botones de acción
+    // Abre el modal para añadir la película a una lista
     document.getElementById('btn-add-to-list').onclick = () => {
       document.getElementById('modal-select-list').classList.remove('hidden');
     };
 
+    // Cierra el modal de selección de listas
     document.getElementById('btn-close-modal').onclick = () => {
       document.getElementById('modal-select-list').classList.add('hidden');
     };
 
+    // Abre el modal de puntuación
     document.getElementById('btn-rate').onclick = () => {
       document.getElementById('modal-rate').classList.remove('hidden');
       const userRating = localStorage.getItem(`movie-rating-${currentMovie.id}`);
@@ -364,6 +385,7 @@
       }
     };
 
+    // Cierra el modal de puntuación y guarda si hay valoración elegida
     document.getElementById('btn-close-rate-modal').onclick = () => {
       if (currentRating > 0) {
         saveRating(currentRating);
@@ -373,14 +395,17 @@
       currentRating = 0;
     };
 
+    // Abre el modal de review
     document.getElementById('btn-review').onclick = () => {
       document.getElementById('modal-review').classList.remove('hidden');
     };
 
+    // Cierra el modal de review
     document.getElementById('btn-close-review-modal').onclick = () => {
       document.getElementById('modal-review').classList.add('hidden');
     };
 
+    // Envía la review escrita por el usuario
     document.getElementById('form-review').addEventListener('submit', (e) => {
       e.preventDefault();
       const reviewText = document.getElementById('review-text').value.trim();
@@ -391,12 +416,13 @@
       }
     });
 
-    // Logout
+    // Cierra sesión y vuelve a la página principal
     document.getElementById('logout-btn').onclick = () => {
       localStorage.clear();
       window.location.href = 'index.html';
     };
 
+    // Al cargar la página se rellena el detalle
     window.onload = () => {
       loadMovieDetail();
     };
