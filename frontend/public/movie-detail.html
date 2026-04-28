@@ -17,6 +17,10 @@
       <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer" onclick="window.location.href='index.html'">
         🎬 FilmBox
       </h1>
+      <button id="nav-toggle" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/20 transition">
+        <span class="sr-only">Abrir menú</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 5h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2z" clip-rule="evenodd" /></svg>
+      </button>
       
       <!-- Navegación visible si el usuario está logueado -->
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
@@ -32,7 +36,7 @@
   </header>
 
   <!-- Sección principal con el detalle de la película -->
-  <main class="max-w-6xl mx-auto p-8 pt-24 pb-96">
+  <main class="max-w-6xl mx-auto p-8 pt-24 pb-28">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
       
       <!-- Póster de la película -->
@@ -95,7 +99,7 @@
 
   <!-- Modal para seleccionar una lista -->
   <div id="modal-select-list" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl max-h-96 overflow-y-auto">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-full max-w-md shadow-2xl max-h-96 overflow-y-auto">
       <h2 class="text-2xl font-bold text-white mb-6">Selecciona una llista</h2>
       <div id="lists-select" class="space-y-2">
         <!-- Aquí se renderizan las listas del usuario -->
@@ -108,7 +112,7 @@
 
   <!-- Modal para dar una puntuación -->
   <div id="modal-rate" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-full max-w-md shadow-2xl">
       <h2 class="text-2xl font-bold text-white mb-6">¿Cuánto te gustó?</h2>
       <div class="flex justify-center gap-2 mb-6">
         <button onclick="setRating(1)" class="star text-5xl hover:text-yellow-400 transition">⭐</button>
@@ -428,6 +432,20 @@
     window.onload = () => {
       loadMovieDetail();
     };
+  </script>
+  <script>
+    const navToggle = document.getElementById('nav-toggle');
+    const navUser = document.getElementById('nav-user');
+    if (navToggle && navUser) {
+      navToggle.addEventListener('click', () => {
+        navUser.classList.toggle('open');
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 767) {
+          navUser.classList.remove('open');
+        }
+      });
+    }
   </script>
 </body>
 </html>

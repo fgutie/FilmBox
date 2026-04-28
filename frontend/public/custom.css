@@ -1,50 +1,68 @@
+/* Estilos custom para responsive y navegación móvil */
 
-  .md\:justify-end {
-    justify-content: flex-end;
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#nav-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  header > div {
+    position: relative;
   }
 
-  .md\:px-8 {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  #nav-toggle {
+    display: inline-flex;
   }
 
-  .md\:py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+  #nav-user {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1rem;
+    padding: 1rem;
+    z-index: 50;
   }
 
-  .md\:pt-3 {
-    padding-top: 0.75rem;
+  #nav-user.open {
+    display: block !important;
   }
 
-  .md\:text-left {
-    text-align: left;
+  #nav-user > * {
+    display: block;
+    width: 100%;
   }
 
-  .md\:text-right {
-    text-align: right;
+  #nav-user > * + * {
+    margin-top: 0.75rem;
   }
 
-  .md\:text-6xl {
-    font-size: 3.75rem;
-    line-height: 1;
+  #nav-user a {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
   }
 
-
-@media (min-width: 1024px) {
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  #nav-user button {
+    margin-left: 0;
   }
 }
 
-@media (min-width: 1280px) {
-  .xl\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2.75rem;
   }
-}
 
-@media (min-width: 1536px) {
-  .\32xl\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+  .text-6xl {
+    font-size: 3rem;
   }
 }

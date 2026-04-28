@@ -17,6 +17,10 @@
       <h1 id="home-link" class="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent cursor-pointer">
         🎬 FilmBox
       </h1>
+      <button id="nav-toggle" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/20 transition">
+        <span class="sr-only">Abrir menú</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 5h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2z" clip-rule="evenodd" /></svg>
+      </button>
 
       <!-- Menú visible cuando el usuario está autenticado -->
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
@@ -32,9 +36,9 @@
   </header>
 
   <!-- Contenido principal con detalle de la lista -->
-  <main class="max-w-7xl mx-auto p-8 pt-24 pb-96">
+  <main class="max-w-7xl mx-auto p-8 pt-24 pb-28">
     <div class="mb-12">
-      <div class="flex justify-between items-start mb-8">
+      <div class="flex flex-col gap-6 md:flex-row justify-between items-start mb-8">
         <div>
           <!-- Título de la lista -->
           <h1 id="list-title" class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
@@ -58,7 +62,7 @@
 
   <!-- Modal para buscar y añadir películas a la lista -->
   <div id="modal-add-movie" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-96 shadow-2xl max-h-96 overflow-y-auto">
+    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-full max-w-md shadow-2xl max-h-96 overflow-y-auto">
       <h2 class="text-2xl font-bold text-white mb-6">Selecciona una pel·lícula</h2>
 
       <!-- Buscador de películas en TMDB -->
@@ -112,5 +116,19 @@
 
   <!-- Script principal de la vista de detalle -->
   <script src="list-detail.js"></script>
+  <script>
+    const navToggle = document.getElementById('nav-toggle');
+    const navUser = document.getElementById('nav-user');
+    if (navToggle && navUser) {
+      navToggle.addEventListener('click', () => {
+        navUser.classList.toggle('open');
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 767) {
+          navUser.classList.remove('open');
+        }
+      });
+    }
+  </script>
 </body>
 </html>
