@@ -75,7 +75,7 @@ app.get('/api/movies', async (req, res) => {
     const genreMap = {};
     (genresData.genres || []).forEach(g => { genreMap[g.id] = g.name; });
 
-    // Reconvierte los datos de TMDB al formato que usa tu frontend
+    // Reconvierte los datos de TMDB al formato que usa frontend
     const movies = tmdbData.results.map(movie => {
       const genreNames = (movie.genre_ids || []).map(id => genreMap[id]).filter(Boolean);
       return {
