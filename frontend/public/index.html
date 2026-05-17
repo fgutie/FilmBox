@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,11 +25,11 @@
       <!-- Menú visible cuando hay usuario logueado -->
       <nav id="nav-user" class="hidden md:flex space-x-6 items-center text-white">
         <span id="username-display" class="text-green-400 font-semibold"></span>
-        <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Pel·lícules</a>
-        <a href="lists.html" class="text-white hover:text-green-400 transition cursor-pointer">Llistes</a>
+        <a href="index.html" class="text-white hover:text-green-400 transition cursor-pointer">Películas</a>
+        <a href="lists.html" class="text-white hover:text-green-400 transition cursor-pointer">Listas</a>
         <a href="profile.html" class="text-white hover:text-green-400 transition cursor-pointer">Perfil</a>
         <button id="logout-btn" type="button" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition ml-2">
-          Tancar sessió
+          Cerrar sesión
         </button>
       </nav>
     </div>
@@ -42,32 +42,32 @@
         <!-- Círculo decorativo del login -->
         <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto mb-4"></div>
         <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
-          Benvingut a FilmBox
+          Bienvenido a FilmBox
         </h2>
-        <p class="text-gray-400 mt-2">La teva plataforma de cine social</p>
+        <p class="text-gray-400 mt-2">Tu plataforma de cine social</p>
       </div>
 
       <!-- Formulario de login/registro -->
       <form id="auth-form" class="space-y-6">
         <!-- Campo de usuario: solo aparece en registro -->
         <div id="username-field">
-          <label class="block text-sm font-medium text-gray-300 mb-2">Usuari</label>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Usuario</label>
           <input type="text" id="username-input"
                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
-                 placeholder="El teu nom d'usuari">
+                 placeholder="Tu nombre de usuario">
         </div>
 
         <!-- Campo de correo -->
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Correu electrònic</label>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Correo electrónico</label>
           <input type="email" id="email-input"
                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
-                 placeholder="usuari@exemple.com" required>
+                 placeholder="usuario@ejemplo.com" required>
         </div>
 
         <!-- Campo de contraseña -->
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Contrasenya</label>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
           <input type="password" id="password-input"
                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all placeholder-gray-500"
                  placeholder="••••••••" required>
@@ -76,14 +76,14 @@
         <!-- Botón para enviar login o registro -->
         <button type="submit" id="submit-btn"
                 class="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
-          Iniciar Sessió
+          Iniciar sesión
         </button>
       </form>
 
       <!-- Botón para cambiar entre login y registro -->
       <div class="mt-8 text-center">
         <button id="toggle-mode" type="button" class="text-green-400 hover:text-green-300 font-semibold text-sm">
-          No tens compte? Registra't
+          ¿No tienes cuenta? Regístrate
         </button>
       </div>
     </div>
@@ -93,10 +93,10 @@
   <main id="main-content" class="max-w-7xl mx-auto p-8 pt-24 pb-28 hidden">
     <div class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
-        🎥 Descobreix les millors pel·lícules
+        🎥 Descubre las mejores películas
       </h1>
       <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-        Explora el catàleg, apunta les teves preferides i comparteix les teves opinions amb la comunitat.
+        Explora el catálogo, apunta tus favoritas y comparte tus opiniones con la comunidad.
       </p>
 
       <!-- Buscador de películas -->
@@ -114,7 +114,7 @@
   <div id="loading" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white/20 border border-white/30 rounded-2xl p-8 text-center">
       <div class="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white" id="loading-text">Carregant...</p>
+      <p class="text-white" id="loading-text">Cargando...</p>
     </div>
   </div>
 
@@ -125,22 +125,22 @@
       <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div class="text-center md:text-left">
           <h4 class="text-white font-bold text-sm mb-1">Sobre FilmBox</h4>
-          <p class="text-gray-400 text-xs">La teva plataforma de cine social on compartir opinions i descobrir noves pel·lícules.</p>
+          <p class="text-gray-400 text-xs">Tu plataforma de cine social para compartir opiniones y descubrir nuevas películas.</p>
         </div>
 
         <!-- Enlaces rápidos -->
         <div class="text-center">
-          <h4 class="text-white font-bold text-sm mb-2">Enllaços ràpids</h4>
+          <h4 class="text-white font-bold text-sm mb-2">Enlaces rápidos</h4>
           <div class="flex justify-center space-x-4 text-gray-400 text-xs">
-            <a href="index.html" class="hover:text-green-400 transition">Pel·lícules</a>
-            <a href="lists.html" class="hover:text-green-400 transition">Llistes</a>
+            <a href="index.html" class="hover:text-green-400 transition">Películas</a>
+            <a href="lists.html" class="hover:text-green-400 transition">Listas</a>
             <a href="profile.html" class="hover:text-green-400 transition">Perfil</a>
           </div>
         </div>
 
         <!-- Enlaces sociales decorativos -->
         <div class="text-center md:text-right">
-          <h4 class="text-white font-bold text-sm mb-2">Segueix-nos</h4>
+          <h4 class="text-white font-bold text-sm mb-2">¡Síguenos!</h4>
           <div class="flex justify-center md:justify-end space-x-2">
             <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">Facebook</a>
             <a href="#" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition transform hover:scale-110 text-xs">Instagram</a>
@@ -194,8 +194,8 @@
     function updateFormMode() {
       usernameField.classList.toggle('hidden', isLoginMode);
       usernameInput.required = !isLoginMode;
-      submitBtn.textContent = isLoginMode ? 'Iniciar Sessió' : 'Registrar';
-      toggleModeBtn.textContent = isLoginMode ? "No tens compte? Registra't" : 'Ja tens compte? Inicia sessió';
+      submitBtn.textContent = isLoginMode ? 'Iniciar sesión' : 'Registrar';
+      toggleModeBtn.textContent = isLoginMode ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
     }
 
     // Muestra la interfaz del usuario autenticado
@@ -251,7 +251,7 @@
         (data.movies || []).forEach(movie => moviesGrid.appendChild(createMovieCard(movie)));
         if (!data.total_pages || data.total_pages <= 1) allMoviesLoaded = true;
       } catch (error) {
-        console.error('Error carregant pel·lícules:', error);
+        console.error('Error cargando películas:', error);
       }
     }
 
@@ -267,7 +267,7 @@
         (data.movies || []).forEach(movie => moviesGrid.appendChild(createMovieCard(movie)));
         if (currentPage >= (data.total_pages || 1)) allMoviesLoaded = true;
       } catch (error) {
-        console.error('Error carregant més pel·lícules:', error);
+        console.error('Error cargando más películas:', error);
       } finally {
         isLoading = false;
       }
@@ -293,7 +293,7 @@
             year: movie.release_date ? new Date(movie.release_date).getFullYear() : '????',
             avgrating: movie.vote_average,
             posterurl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-            genre: 'Pel·lícula',
+            genre: 'Película',
             overview: movie.overview || '',
             release_date: movie.release_date || ''
           }));
