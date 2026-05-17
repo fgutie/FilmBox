@@ -267,10 +267,25 @@
           <img src="${movie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}" alt="${movie.title}" class="w-full h-48 object-cover rounded-2xl mb-4">
           <h3 class="text-lg font-bold text-white mb-2">${movie.title}</h3>
           <p class="text-sm text-gray-400 mb-2">Año: ${movie.year || 'N/A'}</p>
-          <p class="text-sm text-gray-400">Rating medio: ${movie.avgrating?.toFixed(1) || 'N/A'}</p>
+          <p class="text-sm text-gray-400 mb-4">Rating medio: ${movie.avgrating?.toFixed(1) || 'N/A'}</p>
+          <button type="button" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition" onclick="removeWatchlistMovie(${JSON.stringify(movie.id)})">Eliminar de watchlist</button>
         `;
         container.appendChild(card);
       });
+    }
+
+    function removeWatchlistMovie(movieId) {
+      const watchlist = getLocalWatchlist().filter(movie => movie.id !== movieId);
+      saveLocalWatchlist(watchlist);
+      document.getElementById('stats-watchlist').textContent = watchlist.length;
+      renderWatchlist(watchlist);
+    }
+
+    function saveLocalWatchlist(list) {
+      const user = localStorage.getItem('user');
+      if (!user) return;
+      const userId = JSON.parse(user)._id;
+      localStorage.setItem(`watchlist-${userId}`, JSON.stringify(list));
     }
 
     function getLocalWatchlist() {
@@ -279,6 +294,33 @@
       const userId = JSON.parse(user)._id;
       const stored = localStorage.getItem(`watchlist-${userId}`);
       return stored ? JSON.parse(stored) : [];
+    }
+
+    function deleteReview(movieId) {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        alert('Debes iniciar sesión para eliminar una review');
+        return;
+      }
+
+      const userId = JSON.parse(user)._id;
+      fetch(`${API_BASE}/reviews`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, movieId })
+      })
+        .then(async response => {
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error eliminando review');
+          }
+          alert('Review eliminada');
+          loadUserProfile();
+        })
+        .catch(error => {
+          console.error('Error eliminando review:', error);
+          alert('No se pudo eliminar la review');
+        });
     }
 
     // Renderiza la actividad reciente
@@ -305,7 +347,8 @@
                 </div>
                 <span class="text-gray-400 text-sm">${new Date(review.updatedAt).toLocaleDateString()}</span>
               </div>
-              ${review.review ? `<p class="text-gray-300">${review.review}</p>` : '<p class="text-gray-500 italic">Sense review escrita</p>'}
+              ${review.review ? `<p class="text-gray-300">${review.review}</p>` : '<p class="text-gray-500 italic">Sin review escrita</p>'}
+              <button type="button" class="mt-4 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition" onclick="deleteReview('${review.movieId}')">Eliminar review</button>
             </div>
           </div>
         `;
@@ -333,12 +376,13 @@
           card.innerHTML = `
             <img src="${review.moviePoster || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}" alt="${review.movieTitle}" class="w-full h-48 object-cover rounded-2xl mb-4">
             <h3 class="text-lg font-bold text-white mb-2">${review.movieTitle}</h3>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-4">
               <div class="flex gap-1">
                 ${'⭐'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
               </div>
               <span class="text-xs text-gray-400">${new Date(review.updatedAt).toLocaleDateString()}</span>
             </div>
+            <button type="button" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition" onclick="deleteReview('${review.movieId}')">Eliminar review</button>
           `;
           container.appendChild(card);
         });

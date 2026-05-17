@@ -397,14 +397,28 @@
       const button = document.getElementById('btn-add-watchlist');
       if (!button || !currentMovie) return;
       if (isMovieInWatchlist(currentMovie.id)) {
-        button.textContent = '✅ En watchlist';
+        button.textContent = '❌ Eliminar de watchlist';
         button.classList.remove('from-indigo-500', 'to-violet-500');
-        button.classList.add('from-gray-500', 'to-gray-600');
+        button.classList.add('from-red-500', 'to-red-600');
       } else {
         button.textContent = '📌 Añadir a watchlist';
-        button.classList.remove('from-gray-500', 'to-gray-600');
+        button.classList.remove('from-red-500', 'to-red-600');
         button.classList.add('from-indigo-500', 'to-violet-500');
       }
+    }
+
+    function removeMovieFromWatchlist() {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        alert('Debes iniciar sesión para usar la watchlist');
+        return;
+      }
+
+      let watchlist = getWatchlist();
+      watchlist = watchlist.filter(movie => movie.id !== currentMovie.id);
+      saveWatchlist(watchlist);
+      updateWatchlistButton();
+      alert('Película eliminada de tu watchlist');
     }
 
     function addMovieToWatchlist() {
@@ -437,7 +451,13 @@
       document.getElementById('modal-select-list').classList.remove('hidden');
     };
 
-    document.getElementById('btn-add-watchlist').onclick = addMovieToWatchlist;
+    document.getElementById('btn-add-watchlist').onclick = () => {
+      if (isMovieInWatchlist(currentMovie.id)) {
+        removeMovieFromWatchlist();
+      } else {
+        addMovieToWatchlist();
+      }
+    };
 
     // Cierra el modal de selección de listas
     document.getElementById('btn-close-modal').onclick = () => {
