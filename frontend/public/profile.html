@@ -63,6 +63,10 @@
               <div id="stats-lists" class="text-2xl font-bold text-blue-400">0</div>
               <div class="text-gray-400">Listas</div>
             </div>
+            <div class="text-center">
+              <div id="stats-watchlist" class="text-2xl font-bold text-indigo-400">0</div>
+              <div class="text-gray-400">Watchlist</div>
+            </div>
           </div>
         </div>
 
@@ -80,6 +84,14 @@
       <h2 class="text-3xl font-bold text-white mb-6">Películas favoritas</h2>
       <div id="favorite-movies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         <!-- Las películas favoritas se cargan aquí -->
+      </div>
+    </section>
+
+    <!-- Watchlist -->
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold text-white mb-6">Watchlist</h2>
+      <div id="watchlist-movies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Las películas de la watchlist se cargarán aquí -->
       </div>
     </section>
 
@@ -201,11 +213,14 @@
 
         document.getElementById('profile-username').textContent = data.user.username;
         document.getElementById('profile-email').textContent = data.user.email;
-        document.getElementById('profile-bio').textContent = data.user.bio || 'Sense biografia';
+        document.getElementById('profile-bio').textContent = data.user.bio || 'Sin biografía';
         document.getElementById('stats-reviews').textContent = data.stats.reviews;
         document.getElementById('stats-lists').textContent = data.stats.lists;
 
+        const watchlist = getLocalWatchlist();
+        document.getElementById('stats-watchlist').textContent = watchlist.length;
         renderFavoriteMovies(data.user.favoriteMovies || []);
+        renderWatchlist(watchlist);
         renderRecentActivity(data.recentReviews || []);
         loadAllFilms();
       } catch (error) {
@@ -235,13 +250,44 @@
       });
     }
 
+    // Renderiza la watchlist
+    function renderWatchlist(watchlist) {
+      const container = document.getElementById('watchlist-movies');
+      container.innerHTML = '';
+
+      if (!watchlist || watchlist.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 col-span-full text-center">No tienes películas en la watchlist aún</p>';
+        return;
+      }
+
+      watchlist.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'bg-white/5 border border-white/10 rounded-3xl p-4 shadow-lg shadow-black/20';
+        card.innerHTML = `
+          <img src="${movie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image'}" alt="${movie.title}" class="w-full h-48 object-cover rounded-2xl mb-4">
+          <h3 class="text-lg font-bold text-white mb-2">${movie.title}</h3>
+          <p class="text-sm text-gray-400 mb-2">Año: ${movie.year || 'N/A'}</p>
+          <p class="text-sm text-gray-400">Rating medio: ${movie.avgrating?.toFixed(1) || 'N/A'}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function getLocalWatchlist() {
+      const user = localStorage.getItem('user');
+      if (!user) return [];
+      const userId = JSON.parse(user)._id;
+      const stored = localStorage.getItem(`watchlist-${userId}`);
+      return stored ? JSON.parse(stored) : [];
+    }
+
     // Renderiza la actividad reciente
     function renderRecentActivity(reviews) {
       const container = document.getElementById('recent-activity');
       container.innerHTML = '';
 
       if (!reviews || reviews.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center">No has fet cap review encara</p>';
+        container.innerHTML = '<p class="text-gray-400 text-center">Aún no has hecho ninguna review</p>';
         return;
       }
 

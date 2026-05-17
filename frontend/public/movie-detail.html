@@ -74,6 +74,9 @@
           <button id="btn-add-to-list" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
             ➕ Añadir a lista
           </button>
+          <button id="btn-add-watchlist" class="bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+            📌 Añadir a watchlist
+          </button>
           <button id="btn-rate" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
             ⭐ Puntuar
           </button>
@@ -218,6 +221,8 @@
       if (userRating) {
         document.getElementById('my-rating').textContent = userRating + '/5';
       }
+
+      updateWatchlistButton();
 
       // Carga review y listas del usuario
       loadUserReview();
@@ -369,10 +374,70 @@
       });
     }
 
+    function getWatchlist() {
+      const user = localStorage.getItem('user');
+      if (!user) return [];
+      const userId = JSON.parse(user)._id;
+      const stored = localStorage.getItem(`watchlist-${userId}`);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveWatchlist(list) {
+      const user = localStorage.getItem('user');
+      if (!user) return;
+      const userId = JSON.parse(user)._id;
+      localStorage.setItem(`watchlist-${userId}`, JSON.stringify(list));
+    }
+
+    function isMovieInWatchlist(movieId) {
+      return getWatchlist().some(movie => movie.id === movieId);
+    }
+
+    function updateWatchlistButton() {
+      const button = document.getElementById('btn-add-watchlist');
+      if (!button || !currentMovie) return;
+      if (isMovieInWatchlist(currentMovie.id)) {
+        button.textContent = '✅ En watchlist';
+        button.classList.remove('from-indigo-500', 'to-violet-500');
+        button.classList.add('from-gray-500', 'to-gray-600');
+      } else {
+        button.textContent = '📌 Añadir a watchlist';
+        button.classList.remove('from-gray-500', 'to-gray-600');
+        button.classList.add('from-indigo-500', 'to-violet-500');
+      }
+    }
+
+    function addMovieToWatchlist() {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        alert('Debes iniciar sesión para usar la watchlist');
+        return;
+      }
+
+      const watchlist = getWatchlist();
+      if (isMovieInWatchlist(currentMovie.id)) {
+        alert('Esta película ya está en tu watchlist');
+        return;
+      }
+
+      watchlist.push({
+        id: currentMovie.id,
+        title: currentMovie.title,
+        posterurl: currentMovie.posterurl || 'https://via.placeholder.com/300x450/374151/ffffff?text=No+Image',
+        year: currentMovie.year || 'N/A',
+        avgrating: currentMovie.avgrating || 0
+      });
+      saveWatchlist(watchlist);
+      updateWatchlistButton();
+      alert('Película añadida a tu watchlist');
+    }
+
     // Abre el modal para añadir la película a una lista
     document.getElementById('btn-add-to-list').onclick = () => {
       document.getElementById('modal-select-list').classList.remove('hidden');
     };
+
+    document.getElementById('btn-add-watchlist').onclick = addMovieToWatchlist;
 
     // Cierra el modal de selección de listas
     document.getElementById('btn-close-modal').onclick = () => {
